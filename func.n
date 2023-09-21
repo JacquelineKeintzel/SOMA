@@ -1,0 +1,699 @@
+!**************************************************************
+! Functions for superkekb BPM data formation (for k-modulation
+! study) and Twiss parameter saving
+! some parts are taken from A. Wegscheider's script
+! by Renjun Yang (2010-02-01)
+!**************************************************************
+
+(* globle variables *)
+COLWIDTH = 18;
+
+!==============================================================
+! String format
+!==============================================================
+Spaces[w_] := Nest[StringJoin[#," "]&,"",Max[0,w]];
+FormatString[string_, max_] := string//Spaces[max - StringLength[string]];
+FormatColumn[string_] := FormatString[string, COLWIDTH];
+FormatColumnHeader[string_] := Spaces[COLWIDTH - StringLength[string]]//string;
+
+!==============================================================
+! acquire current date/time
+!==============================================================
+T0[]:=Module[{},
+    time0=Date[];
+    Print[DateString[time0]];
+];
+
+
+!==============================================================
+! Improved FileNames[] function (simple)
+! usage: FileNames["*.py", "./"]
+! output: {"a.py","b.py"}
+!==============================================================
+FileNames2[form_String, path_String] := Module[{fp, ret, tmp1, tmp2},
+  fp = OpenRead["!ls "//path//" >/dev/null"];
+  If[fp === $Failed, {},
+    tmp1 = Table[Check[Read[fp, String], EndOfFile], {i, 1000}];
+    tmp2 = Select[tmp1, # <=> EndOfFile&];
+    ret = tmp2;
+    While[Length[tmp1] === Length[tmp2],
+      tmp1 = Table[Check[Read[fp, String], EndOfFile], {i, 1000}];
+      tmp2 = Select[tmp1, # <=> EndOfFile&];
+      ret = Join[ret, tmp2]];
+    ];
+  Select[ret, StringMatchQ[#, form]&]];
+
+FileNames2[form_String]:= FileNames2[form, "./"];
+
+!==============================================================
+! write twiss parameters to two files:
+! 1. at all MONI;
+! 2. at all elements;
+!==============================================================
+SaveTwiss[fn1_:moni, fn2_:total]:=
+  Module[{fw1, fw2, nx0=0, ny0=0},
+    $FORM = "18.7";
+    
+    System["rm "//fn1];
+    TwissTitleMoni[fn1];
+    WriteTwissMoni[fn1, nx0, ny0];
+    
+    System["rm "//fn2];
+    TwissTitleAll[fn2];
+    WriteTwissAll[fn2, nx0, ny0];   
+  ]
+  
+!==============================================================
+! write title to the twiss file (MONI)
+!==============================================================
+TwissTitleMoni[fname_:string]:=
+  Module[{fw},
+    fw = OpenWrite[fname];             
+    WriteString[fw, "@ TYPE       %05s      \"TWISS\"\n"];
+    WriteString[fw, "@ SEQUENCE   %05s      \"SuperKEKB-HER\"\n"];
+    WriteString[fw, "@ PARTICLE   %05s      \"ELECTRON\"\n"];
+    WriteString[fw, "@ OpticsFile %s       ", optics$file, "\n"];
+    WriteString[fw, "@ PC         %le      ", ToString[MOMENTUM*1e-9], "\n"];
+    WriteString[fw, "@ PBUNCH     %le      ", ToString[PBUNCH], "\n"];
+    WriteString[fw, "@ EX         %le      ", ToString[Emittances[[1]]/.em], "\n"];
+    WriteString[fw, "@ EY         %le      ", ToString[Emittances[[2]]/.em], "\n"];
+    WriteString[fw, "@ ALFA       %le      ", ToString[MomentumCompaction/.em], "\n"];
+    WriteString[fw, "@ Q1         %le      ", Twiss["NX", "$$$"]/(2*Pi), "\n"];
+    WriteString[fw, "@ Q2         %le      ", Twiss["NY", "$$$"]/(2*Pi), "\n"];
+    WriteString[fw, "@ DATETIME   %08s     \"", ToString[DateString[]], "\"\n"];
+    ! WriteString[fw, "@ SEQUENCE   %s        SuperKEKB\n"];
+
+    WriteString[fw, "* ",
+               FormatColumn["NAME"], "  ",
+               FormatColumn["TYPENAME"], "  ",
+               FormatColumnHeader["S"],
+               FormatColumnHeader["L"],
+               FormatColumnHeader["BETX"],
+               FormatColumnHeader["BETY"],
+               FormatColumnHeader["ALFX"],
+               FormatColumnHeader["ALFY"],
+               FormatColumnHeader["MUX"],
+               FormatColumnHeader["MUY"],
+               FormatColumnHeader["DeltaMUX"],
+               FormatColumnHeader["DeltaMUY"],
+               FormatColumnHeader["DX"],
+               FormatColumnHeader["DY"],
+               FormatColumnHeader["DPX"],
+               FormatColumnHeader["DPY"],
+               FormatColumnHeader["X"],
+               FormatColumnHeader["PX"],
+               FormatColumnHeader["Y"],
+               FormatColumnHeader["PY"],
+               FormatColumnHeader["R11"],
+               FormatColumnHeader["R12"],
+               FormatColumnHeader["R21"],
+               FormatColumnHeader["R22"],
+               "\n"];
+    WriteString[fw, "$ ",
+               FormatColumn["%s"], "  ",
+               FormatColumn["%s"], "  ",
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               FormatColumnHeader["%le"],
+               "\n"];
+    Close[fw];
+  ]
+
+
+!==============================================================
+! write title to the twiss file (all elements)
+!==============================================================
+TwissTitleAll[fname_:string]:=
+  Module[{fw},
+    fw = OpenWrite[fname];
+    WriteString[fw, "@ TYPE       %05s      \"TWISS\"\n"];
+    WriteString[fw, "@ SEQUENCE   %05s      \"SuperKEKB-HER\"\n"];
+    WriteString[fw, "@ PARTICLE   %05s      \"ELECTRON\"\n"];
+    WriteString[fw, "@ OpticsFile %s       ", optics$file, "\n"];
+    WriteString[fw, "@ PC         %le      ", ToString[MOMENTUM*1e-9], "\n"];
+    WriteString[fw, "@ PBUNCH     %le      ", ToString[PBUNCH], "\n"];
+    WriteString[fw, "@ EX         %le      ", ToString[Emittances[[1]]/.em], "\n"];
+    WriteString[fw, "@ EY         %le      ", ToString[Emittances[[2]]/.em], "\n"];
+    WriteString[fw, "@ ALFA       %le      ", ToString[MomentumCompaction/.em], "\n"];
+    WriteString[fw, "@ Q1         %le      ", Twiss["NX", "$$$"]/(2*Pi), "\n"];
+    WriteString[fw, "@ Q2         %le      ", Twiss["NY", "$$$"]/(2*Pi), "\n"];
+    WriteString[fw, "@ DATETIME   %08s     \"", ToString[DateString[]], "\"\n"];
+    
+    WriteString[fw, "* ",
+      			FormatColumn["NAME"], "  ",
+      			FormatColumn["TYPENAME"], "  ",
+      			FormatColumnHeader["S"],
+      			FormatColumnHeader["L"],
+      			FormatColumnHeader["BETX"],
+      			FormatColumnHeader["BETY"],
+      			FormatColumnHeader["ALFX"],
+      			FormatColumnHeader["ALFY"],
+      			FormatColumnHeader["MUX"],
+      			FormatColumnHeader["MUY"],
+            FormatColumnHeader["DX"],
+            FormatColumnHeader["DY"],
+            FormatColumnHeader["DPX"],
+            FormatColumnHeader["DPY"],
+            FormatColumnHeader["X"],
+            FormatColumnHeader["PX"],
+            FormatColumnHeader["Y"],
+            FormatColumnHeader["PY"],
+      			FormatColumnHeader["K0L"],
+      			FormatColumnHeader["K1L"],
+      			FormatColumnHeader["K2L"],
+      			FormatColumnHeader["DeltaMUX"],
+      			FormatColumnHeader["DeltaMUY"],
+      			"\n"];
+	WriteString[fw, "$ ",
+      			FormatColumn["%s"], "  ",
+      			FormatColumn["%s"], "  ",
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			FormatColumnHeader["%le"],
+      			"\n"];
+  
+    Close[fw];
+  ]
+
+!==============================================================
+! write Twiss parameter at MONI to twiss file
+! $FORM = "18.7";
+! nx0, ny0 - initial tune
+!==============================================================
+WriteTwissMoni[fname_:string, nx0_, ny0_]:=
+  Module[{fw, nbpm},
+    fw = OpenAppend[fname];
+    ! WriteString[fw, "\n"];
+   	lastnx = 0;
+	lastny = 0; 
+    nbpm = LINE["NAME", "M*"];      
+    Do[
+        WriteString[fw, "  ",
+          FormatColumn[nbpm[i]], "  ",
+          FormatColumn[LINE["TYPENAME", nbpm[i]]], "  ",
+          LINE["S", nbpm[i]],
+          LINE["L", nbpm[i]],
+          Twiss["BX", nbpm[i]],
+          Twiss["BY", nbpm[i]],
+          Twiss["AX", nbpm[i]],
+          Twiss["AY", nbpm[i]],
+          Twiss["NX", nbpm[i]]/2/Pi,
+          Twiss["NY", nbpm[i]]/2/Pi,
+          (Twiss["NX", nbpm[i]]-lastnx)/2/Pi,
+          (Twiss["NY", nbpm[i]]-lastny)/2/Pi,
+          Twiss["EX", nbpm[i]],
+          Twiss["EY", nbpm[i]],
+          Twiss["EPX", nbpm[i]],
+          Twiss["EPY", nbpm[i]],
+          Twiss["DX", nbpm[i]],
+          Twiss["DPX", nbpm[i]],
+          Twiss["DY", nbpm[i]],
+          Twiss["DPY", nbpm[i]],
+          Twiss["R1", nbpm[i]],
+          Twiss["R2", nbpm[i]],
+          Twiss["R3", nbpm[i]],
+          Twiss["R4", nbpm[i]],
+          "\n"];
+		lastnx = Twiss["NX", nbpm[i]];
+		lastny = Twiss["NY", nbpm[i]];
+		, {i, Length[nbpm]}];
+    Close[fw];
+  ]
+
+
+!==============================================================
+! write Twiss parameter at all elements to twiss file
+! $FORM = "18.10"?
+! nx0, ny0 - initial tune
+!==============================================================
+WriteTwissAll[fname_:string, nx0_, ny0_]:=
+  Module[{fw, elems},
+    fw = OpenAppend[fname];
+    ! WriteString[fw, "\n"];
+    
+    elems = LINE["NAME", "{MQS}*"];      
+    ! elems = LINE["NAME", "*"];      
+    Scan[
+        WriteString[fw, "  ",
+          FormatColumn[#], "  ",
+          FormatColumn[LINE["TYPENAME", #]], "  ",
+          LINE["S", #],
+          LINE["L", #],
+          Twiss["BX", #],
+          Twiss["BY", #],
+          Twiss["AX", #],
+          Twiss["AY", #],
+          Twiss["NX", #]/2/Pi,
+          Twiss["NY", #]/2/Pi,
+          Twiss["EX", #],
+          Twiss["EY", #],
+          Twiss["EPX", #],
+          Twiss["EPY", #],
+          Twiss["DX", #],
+          Twiss["DPX", #],
+          Twiss["DY", #],
+          Twiss["DPY", #],
+          LINE["K0", #],
+          LINE["K1", #],
+          LINE["K2", #],
+          (Twiss["NX", #]-nx0)/2/Pi,
+          (Twiss["NY", #]-ny0)/2/Pi,
+          "\n"]&, elems];
+    Close[fw];
+  ]
+
+!==============================================================
+! save the BPM data in a simplified format
+! the original data file is in the SuperKEKB data format
+! fn0, fn1 -> file name for original turn-by-turn read and post-format
+!==============================================================
+FormatBPMRead[fn0_:orignal, fn1_:formatted, fn2_:BPMlist]:=
+  Module[{clock, dat0, rawdata, asynchBPMs, fw, bpm, loc, x, y, nturns, xline, yline, offs},
+    $FORM = "18.7";
+    clock = Date[];
+    
+    dat0 = Get[fn0];
+    rawdata = dat0[2]; ! this seems to get something like data->OrbitRaw or data["OrbitRaw"]
+    nbpm = Length[rawdata];
+    If[fn2=="None",,asynchBPMs = Get[fn2]]; ! Edited by AK
+ 
+    fw = OpenWrite[fn1];
+    WriteString[fw,
+                "# SDDSASCIIFORMAT v1\n",
+                "# Beam: SuperKEKB\t"//RingID//"\n",
+                "# Acquisition date: "//DateString[clock]//"\n",
+                "# number of turns : ", ToString[Length[rawdata[1,2,1]]], "\n",
+                "# number of monitors : ", ToString[nbpm], "\n",
+                "# Opticsfile : ", optics$file, "\n",
+                "# tunes of optics$file : Qx = ", ToString[Twiss["NX", "$$$"]/(2*Pi)], ", Qy = ", ToString[Twiss["NY", "$$$"]/(2*Pi)], "\n",
+                "# File Info:\n",
+                "# - Created by : a SAD KEK to ASCII SDDS converter\n",
+                "# - Written by : Andreas Wegscheider, Renjun Yang; edit by Adam Koval (23/5/19)\n",
+                "# - Version    : 1.0 (01.02.2019)\n"];                
+ 
+    Do[
+      bpm = rawdata[[i, 1]];
+      loc = ToString[LINE["S", bpm]];      
+    
+      x = rawdata[[i, 2, 1]];
+      y = rawdata[[i, 2, 2]];
+      nturns = Length[x];
+    
+      Do[
+        AppendTo[x, 0];
+        AppendTo[y, 0];
+        ,{j, 1, 3}];
+
+      If[loc<>"{}",
+        xline = "0 "//bpm//" "//loc//" ";
+        yline = "1 "//bpm//" "//loc//" ";
+
+        If[fn2=="None", offs = bpm, offs = bpm/.asynchBPMs]; ! Edited by AK
+        If[offs==bpm, offs = 0];
+        offs += 2;
+      
+        Do[
+          indx = j + offs;
+          xline = xline//" "//ToString[x[[indx]]];
+          yline = yline//" "//ToString[y[[indx]]];
+          ,{j, nturns-offs}];
+        
+        Do[
+          xline = xline//" 0";
+          yline = yline//" 0";
+          ,{j, offs}];
+        
+        WriteString[fw, xline//"\n"];
+        WriteString[fw, yline//"\n"];
+        ];
+      ,{i, 1, nbpm}];
+
+    Close[fw];
+  ]
+
+!==============================================================
+! Set KQC1L/KQC1R/KQC2L/KQC2R and the length of them
+!==============================================================
+GetQCInfo[ring_:HER?LER]:=
+  Module[{},
+    If[ring == "HER",
+       QC1L = "VKQC1LE";
+       QC1R = "VKQC1RE";
+       QC2L = "VKQC2LE";
+       QC2R = "VKQC2RE";
+       LQC1Ll =  0.3774;
+       LQC1Lh = 0.60;
+       LQC1Rl =  0.3774;
+       LQC1Rh = 0.60;
+       LQC2Ll =  0.50;
+       LQC2Lh = 0.60;
+       LQC2Rl =  0.3896;
+       LQC2Rh = 0.60;   
+       ,
+       If[ring == "LER",
+          QC1L = "VKQC1LP";
+          QC1R = "VKQC1RP";
+          QC2L = "VKQC2LP";
+          QC2R = "VKQC2RP";
+          LQC1Ll =  0.34;
+          LQC1Lh = 0.60;
+          LQC1Rl =  0.34;
+          LQC1Rh = 0.60;
+          LQC2Ll =  0.390;
+          LQC2Lh = 0.60;
+          LQC2Rl =  0.3868;
+          LQC2Rh = 0.60;
+          ,
+          Print["	 >> Enter correct ring name (HER or LER)"];
+          FFS["end"]
+          ];
+       ];
+    ]
+    
+!==============================================================    
+! Transfer matrix
+!==============================================================
+GetTMATRIX[ringID_:HER?LER]:=
+  Module[{},
+    If[ringID == "HER",
+       MQC1L = TransferMatrix["QC1LPE601","QC1LE1225"];
+       MQC1R = TransferMatrix["ESRE600", "ECSRE2731"];
+       ! matrix1R = TransferMatrix["ESRE600", "MQC1RKMOD"];
+       MQC2L = TransferMatrix["QC1LPE601","QC2LE2455"];
+       MQC2R = TransferMatrix["ESRE600","ECSRE2731"]
+       ,
+       If[ringID == "LER",
+          MQC1L = TransferMatrix["QC1LP605", "QC1LP775"];
+          MQC1R = TransferMatrix["ECSRP601", "ECSRP771"];
+          MQC2L = TransferMatrix["QC1LP605", "QC2LP1735"];
+          MQC2R = TransferMatrix["ECSRP601", "ECSRP1731"],
+          Print["	 >> Enter correct ring name (HER or LER)"];
+          FFS["end"]
+         ];
+       ];
+     ]
+
+!==============================================================
+! K1QC1L, K1QC1R, K1QC2L, K1QC2R, NX, NY, BX, BY, AX, AY
+!==============================================================
+GetQCValueTwiss[]:=
+  Module[{Kval0, nu0, twiss0},
+    Join[Element["K1", {QC1L, QC1R, QC2L, QC2R}],
+         Twiss[{"NX", "NY"},"$$$"]/(2*Pi),        
+         Twiss[{"BX", "BY", "AX", "AY"}, "IP"]]
+    ]
+
+!==============================================================
+! To get nux and nuy with quad. perturbations
+! {nux, nuy} = GetTuneKmodu[QC1L, {1-0.0005, 1, 0.0005}]
+!==============================================================
+GetTuneKmodu[whichQC_:name, DeltaK1L_:Kperturbation]:=
+  Module[{k1l, k1l0},
+    k1l0 = Element["K1", whichQC];
+    tunex = tuney = {};
+    Do[
+      k1l = k1l0*DeltaK1L[i];
+      SetElement[whichQC,,{"K1"->k1l}];
+      FFS["CALC;"];
+      AppendTo[tunex, Twiss["NX","$$$"]/(2*Pi)];
+      AppendTo[tuney, Twiss["NY","$$$"]/(2*Pi)];
+      ,{i, 1, Length[DeltaK1L]}];
+      
+      SetElement[whichQC,,{"K1"->k1l0}];
+      FFS["CALC;"];      
+      {tunex, tuney}
+    ];
+
+!==============================================================
+! write IR info to file
+!==============================================================
+WriteIRInformation[fname_:string, RingID_:HER?LER]:=
+  Module[{fw},
+      $FORM = "18.7";
+      fw = OpenWrite[fname];
+      WriteString[fw, "# Beta function at the IP and lattice information at FF Quad.\n",
+                      "# Machine: SuperKEKB\t"//RingID//"\n",
+                      "# Acquisition date: "//DateString[Date[]]//"\n"
+                ];      
+      WriteString[fw, FormatColumn["BETX*"], QCK1Twiss0[7], "\n",
+                      FormatColumn["BETY*"], QCK1Twiss0[8], "\n",
+                      FormatColumn["ALFX*"], QCK1Twiss0[9], "\n",
+                      FormatColumn["ALFY*"], QCK1Twiss0[10], "\n",
+                      FormatColumn["Qx0"], QCK1Twiss0[5], "\n",
+                      FormatColumn["Qy0"], QCK1Twiss0[6], "\n",
+                      FormatColumn["LQC1L_l"], LQC1Ll, "\n",
+                      FormatColumn["LQC1L_h"], LQC1Lh, "\n",                      
+                      FormatColumn["LQC2L_l"], LQC2Ll, "\n",
+                      FormatColumn["LQC2L_h"], LQC2Lh, "\n",
+                      FormatColumn["LQC1R_l"], LQC1Rl, "\n",
+                      FormatColumn["LQC1R_h"], LQC1Rh, "\n",                      
+                      FormatColumn["LQC2R_l"], LQC2Rl, "\n",
+                      FormatColumn["LQC2R_h"], LQC2Rh, "\n",
+                      FormatColumn["KQC1L0"], QCK1Twiss0[1], "\n",
+                      FormatColumn["KQC2L0"], QCK1Twiss0[3], "\n",
+                      FormatColumn["KQC1R0"], QCK1Twiss0[2], "\n",                                            
+                      FormatColumn["KQC2R0"], QCK1Twiss0[4], "\n",
+                      FormatColumn["TMAT_QC1L"], MQC1L[3,3], "\t", MQC1L[3,4], "\t", MQC1L[4,3], "\t", MQC1L[4,4], "\n",
+                      FormatColumn["TMAT_QC2L"], MQC2L[3,3], "\t", MQC2L[3,4], "\t", MQC2L[4,3], "\t", MQC2L[4,4], "\n",
+                      FormatColumn["TMAT_QC1R"], MQC1R[3,3], "\t", MQC1R[3,4], "\t", MQC1R[4,3], "\t", MQC1R[4,4], "\n",
+                      FormatColumn["TMAT_QC2R"], MQC2R[3,3], "\t", MQC2R[3,4], "\t", MQC2R[4,3], "\t", MQC2R[4,4], "\n"                      
+                 ];
+      Close[fw];
+  ]
+
+!============================================================== 
+! append Tune after writing IR info to file
+!==============================================================
+AppendTuneModu[fname_:string, KQCmodu_:]:=
+  Module[{fw},
+    $FORM = "18.7";
+    fw = OpenAppend[fname];
+    
+    WriteString[fw, FormatColumn["KQC_modu"]];
+    Scan[WriteString[fw, #, "\t"]&, KQCmodu];
+    
+    WriteString[fw, "\n", FormatColumn["NY_QC1L"]];
+    Scan[WriteString[fw, #, "\t"]&, NY1L];
+    
+    WriteString[fw, "\n", FormatColumn["NY_QC2L"]];
+    Scan[WriteString[fw, #, "\t"]&, NY2L];
+    
+    WriteString[fw, "\n", FormatColumn["NY_QC1R"]];
+    Scan[WriteString[fw, #, "\t"]&, NY1R];
+    
+    WriteString[fw, "\n", FormatColumn["NY_QC2R"]];
+    Scan[WriteString[fw, #, "\t"]&, NY2R];
+
+    Close[fw];
+  ]
+
+!============================================================== 
+! Save lattice to File, from Katsunobu Oide
+! Saved to file with name fname. n is name of saved beamline, default is RING.
+!============================================================== 
+CreatePlainDeck[fname_,n_:"RING"]:=Module[{fn=fname,p,f},
+  p=StringPosition[fn,".sad"];
+  If[p<=>{},
+    fn=fn[1,p[[-1,1]]-1]];
+  fn=fn//".plain"//".sad";
+  f=OpenWrite[fn];
+  Write[f,"MOMENTUM = ", MOMENTUM/1e9," GEV;"];
+  Write[f,"PBUNCH = ", PBUNCH, ";"];
+  Write[f,"MINCOUP = ", MINCOUP, ";"];
+  Write[f,"FSHIFT = ", FSHIFT, ";"];
+  FFS["TYPE;",f];
+  Write[f,"LINE ",n," ="];
+  WriteBeamLine[f,Format->"MAIN"];
+  ! Write[f,";\nFFS USE =",n,";"];
+  Write[f, ";"];
+  Close[f]];
+
+
+!==============================================================
+!
+! Functions from Paul (to be improved...)
+!============================================================== 
+
+CoupLER2HERPartition[]:=(
+   ! Couple together quadrupoles in HER so you can use virtual quadrupoles to adjust quadrupole K1 strength
+   K1VKQC1REorig = Element["K1","VKQC1RE"];
+   K1QC1REorig := Element["K1","QC1RE*"];
+   EVListQC1RE = Range[Length[K1QC1REorig]];
+   QC1REElements = Element["NAME","QC1RE*"];
+   Do[
+      temp := K1QC1REorig[i]/K1VKQC1REorig*"K1"["VKQC1RE"];
+      EVListQC1RE[i]= "K1"[QC1REElements[i]] :> Evaluate[temp];
+    ,{i,Length[K1QC1REorig]}];
+
+
+   K1VKQC1LEorig = Element["K1","VKQC1LE"];
+   K1QC1LEorig := Element["K1","QC1LE*"];
+   EVListQC1LE = Range[Length[K1QC1LEorig]];
+   QC1LEElements = Element["NAME","QC1LE*"];
+   Do[
+      temp := K1QC1LEorig[i]/K1VKQC1LEorig*"K1"["VKQC1LE"];
+      EVListQC1LE[i]= "K1"[QC1LEElements[i]] :> Evaluate[temp];
+    ,{i,Length[K1QC1LEorig]}];
+
+
+   K1VKQC2REorig = Element["K1","VKQC2RE"];
+   K1QC2REorig := Element["K1","QC2RE*"];
+   EVListQC2RE = Range[Length[K1QC2REorig]];
+   QC2REElements = Element["NAME","QC2RE*"];
+   Do[
+      temp := K1QC2REorig[i]/K1VKQC2REorig*"K1"["VKQC2RE"];
+      EVListQC2RE[i]= "K1"[QC2REElements[i]] :> Evaluate[temp];
+    ,{i,Length[K1QC2REorig]}];
+
+
+   K1VKQC2LEorig = Element["K1","VKQC2LE"];
+   K1QC2LEorig := Element["K1","QC2LE*"];
+   EVListQC2LE = Range[Length[K1QC2LEorig]];
+   QC2LEElements = Element["NAME","QC2LE*"];
+   Do[
+      temp := K1QC2LEorig[i]/K1VKQC2LEorig*"K1"["VKQC2LE"];
+      EVListQC2LE[i]= "K1"[QC2LEElements[i]] :> Evaluate[temp];
+    ,{i,Length[K1QC2LEorig]}];
+
+   ElementValues = Join[{"K1"["VRQC1RE"]:>-"K1"["VKQC1RE"]}, EVListQC1RE,
+                        {"K1"["VRQC1LE"]:>-"K1"["VKQC1LE"]}, EVListQC1LE,
+                        {"K1"["VRQC2RE"]:>-"K1"["VKQC2RE"]}, EVListQC2RE,
+                        {"K1"["VRQC2LE"]:>-"K1"["VKQC2LE"]}, EVListQC2LE];
+);
+
+CoupHER2LERPartition[]:=(
+   ! Couple together quadrupoles in LER so you can use virtual quadrupoles to adjust quadrupole K1 strength
+   K1VKQC1RPorig = Element["K1","VKQC1RP"];
+   K1QC1RPorig := Element["K1","QC1RP*"];
+   EVListQC1RP = Range[Length[K1QC1RPorig]];
+   QC1RPElements = Element["NAME","QC1RP*"];
+   Do[
+      temp := K1QC1RPorig[i]/K1VKQC1RPorig*"K1"["VKQC1RP"];
+      EVListQC1RP[i]= "K1"[QC1RPElements[i]] :> Evaluate[temp];
+    ,{i,Length[K1QC1RPorig]}];
+
+
+   K1VKQC1LPorig = Element["K1","VKQC1LP"];
+   K1QC1LPorig := Element["K1","QC1LP*"];
+   EVListQC1LP = Range[Length[K1QC1LPorig]];
+   QC1LPElements = Element["NAME","QC1LP*"];
+   Do[
+      temp := K1QC1LPorig[i]/K1VKQC1LPorig*"K1"["VKQC1LP"];
+      EVListQC1LP[i]= "K1"[QC1LPElements[i]] :> Evaluate[temp];
+    ,{i,Length[K1QC1LPorig]}];
+
+
+   K1VKQC2RPorig = Element["K1","VKQC2RP"];
+   K1QC2RPorig := Element["K1","QC2RP*"];
+   EVListQC2RP = Range[Length[K1QC2RPorig]];
+   QC2RPElements = Element["NAME","QC2RP*"];
+   Do[
+      temp := K1QC2RPorig[i]/K1VKQC2RPorig*"K1"["VKQC2RP"];
+      EVListQC2RP[i]= "K1"[QC2RPElements[i]] :> Evaluate[temp];
+    ,{i,Length[K1QC2RPorig]}];
+
+
+   K1VKQC2LPorig = Element["K1","VKQC2LP"];
+   K1QC2LPorig := Element["K1","QC2LP*"];
+   EVListQC2LP = Range[Length[K1QC2LPorig]];
+   QC2LPElements = Element["NAME","QC2LP*"];
+   Do[
+      temp := K1QC2LPorig[i]/K1VKQC2LPorig*"K1"["VKQC2LP"];
+      EVListQC2LP[i]= "K1"[QC2LPElements[i]] :> Evaluate[temp];
+    ,{i,Length[K1QC2LPorig]}];
+
+   ElementValues = Join[{"K1"["VRQC1RP"]:>-"K1"["VKQC1RP"]}, EVListQC1RP,
+                        {"K1"["VRQC1LP"]:>-"K1"["VKQC1LP"]}, EVListQC1LP,
+                        {"K1"["VRQC2RP"]:>-"K1"["VKQC2RP"]}, EVListQC2RP,
+                        {"K1"["VRQC2LP"]:>-"K1"["VKQC2LP"]}, EVListQC2LP];
+);
+
+
+CoupleFinalQuadRotationLER[]:=(
+   ! Couple together quadrupoles in LER so you can use virtual quadrupoles to adjust Rotation
+   ROTVKQC1RPorig = Element["ROTATE","VKQC1RP"];
+   ROTQC1RPorig := Element["ROTATE","QC1RP*"];
+   EVListQC1RP = Range[Length[ROTQC1RPorig]];
+   QC1RPElements = Element["NAME","QC1RP*"];
+   Do[
+      temp := ROTQC1RPorig[i]/ROTVKQC1RPorig*"ROTATE"["VKQC1RP"];
+      EVListQC1RP[i]= "ROTATE"[QC1RPElements[i]] :> Evaluate[temp];
+    ,{i,Length[ROTQC1RPorig]}];
+
+
+   ROTVKQC1LPorig = Element["ROTATE","VKQC1LP"];
+   ROTQC1LPorig := Element["ROTATE","QC1LP*"];
+   EVListQC1LP = Range[Length[ROTQC1LPorig]];
+   QC1LPElements = Element["NAME","QC1LP*"];
+   Do[
+      temp := ROTQC1LPorig[i]/ROTVKQC1LPorig*"ROTATE"["VKQC1LP"];
+      EVListQC1LP[i]= "ROTATE"[QC1LPElements[i]] :> Evaluate[temp];
+    ,{i,Length[ROTQC1LPorig]}];
+
+
+   ROTVKQC2RPorig = Element["ROTATE","VKQC2RP"];
+   ROTQC2RPorig := Element["ROTATE","QC2RP*"];
+   EVListQC2RP = Range[Length[ROTQC2RPorig]];
+   QC2RPElements = Element["NAME","QC2RP*"];
+   Do[
+      temp := ROTQC2RPorig[i]/ROTVKQC2RPorig*"ROTATE"["VKQC2RP"];
+      EVListQC2RP[i]= "ROTATE"[QC2RPElements[i]] :> Evaluate[temp];
+    ,{i,Length[ROTQC2RPorig]}];
+
+
+   ROTVKQC2LPorig = Element["ROTATE","VKQC2LP"];
+   ROTQC2LPorig := Element["ROTATE","QC2LP*"];
+   EVListQC2LP = Range[Length[ROTQC2LPorig]];
+   QC2LPElements = Element["NAME","QC2LP*"];
+   Do[
+      temp := ROTQC2LPorig[i]/ROTVKQC2LPorig*"ROTATE"["VKQC2LP"];
+      EVListQC2LP[i]= "ROTATE"[QC2LPElements[i]] :> Evaluate[temp];
+    ,{i,Length[ROTQC2LPorig]}];
+
+   !ElementValues = Join[{"ROTATE"["VRQC1RP"]:>"ROTATE"["VKQC1RP"]}, EVListQC1RP,
+    !                    {"ROTATE"["VRQC1LP"]:>"ROTATE"["VKQC1LP"]}, EVListQC1LP,
+    !                    {"ROTATE"["VRQC2RP"]:>"ROTATE"["VKQC2RP"]}, EVListQC2RP,
+    !                    {"ROTATE"["VRQC2LP"]:>"ROTATE"["VKQC2LP"]}, EVListQC2LP];
+
+    !ElementValues = Join[EVListQC1RP,
+     !                    EVListQC1LP,
+     !                    EVListQC2RP,
+     !                    EVListQC2LP];
+);

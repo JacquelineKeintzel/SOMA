@@ -1,0 +1,27 @@
+FFS;
+Library@Require["HEROptics"];
+ring=HEROptics[];
+! d=Get["/ldata/SuperKEKB/KCG/HER/MeasOpt/2019/11/XYC_2019_11_22_12:27:59"];
+d=Get["/ldata/SuperKEKB/KCG/HER/MeasOpt/2019/11/BETA_RAW_2019_11_11_10:35:49"];
+OpticsFile="OpticsFile"/.d;
+ring@ReadOpticsFile[OpticsFile];
+! dxy="XYCoupData"/.d;
+! Print[dxy];
+Print[ d[[2,16,1]] ];
+abort;
+
+
+
+nst=1;
+dxy1=Cases[dxy[[nst,2]],{_,_,_,1}]; (* 1: good, 0: NG*)
+strname=dxy[[nst,1,1]];
+bpm=dxy1[[,1]];
+ss=LINE["S",bpm];
+dxnst=dxy1[[,2]];
+dynst=dxy1[[,3]];
+OpticsPlot[{{Thread[{ss,dxnst}]},{Thread[{ss,dynst}]}},
+ListCoordinate->"S",Region->{"PMID+1","PMID"},
+FrameLabel->{"DX (mm)","DY (mm)"},
+Names->"QD1*|"//strname,PlotJoined->True];
+Update[];
+end;

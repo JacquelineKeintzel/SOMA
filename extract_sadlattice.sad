@@ -1,0 +1,15 @@
+FFS; 
+
+Get["func.n"]; ! load user defined functions (not necessary)
+ring$name="LER"; ! "HER" 
+Library@Require["LEROptics","HEROptics"];
+ring=If[ring$name=="LER", LEROptics[] , HEROptics[] ];
+
+fn = "/nfs/sadnas1a/users/jkeintze/SKEKB_TbT_analysis/input_online_HER_PLL_HV_2019_12_03/";
+dat0=Get[fn];
+opticsname=dat0[1,3];
+ring@ReadOpticsFile[opticsname];
+CALC;
+CreatePlainDeck["/nfs/sadnas1a/users/jkeintze/SKEKB_TbT_analysis/lattice_online_HER_2019_12_03.sad", "RING"];
+
+abort;

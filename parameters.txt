@@ -1,0 +1,54 @@
+# ======================================================================= 
+# EDIT THIS FILE ACCORDING TO NEED
+# nturns: Number of turns taken in measurement. Passed to harmonic analysis.
+# ringID: Name of the ring used for TbT acquisition, "HER" or "LER".
+# lattice: Path of the SAD lattice you will be using.
+# input_data_path: Path to directory containing KEK TbT data files.
+# kickax: Used in asynch analysis to determine which axis to analyse.
+#		  Generally, the axis in which kicks are applied has cleaner
+#		  data which is more suitable for analysis.
+# BetaBeatsrc_path: Path to the Beta-Beat.src package.
+# BetaBeatsrc_path: Path to the OMC3 package.
+# model_path: Directory into which the model information for
+#	     	  Beta-Beat.src scripts is stored (and where additional
+#			  information will be created).
+# main_output_path: Directory into which all output (not sdds files)
+#	      			will be placed.
+# unsynched_sdds_path: Where sdds files in the first stage (without
+#	    			   asynch fix) will be stored.
+# synched_sdds_path: Where sdds files in the second stage (with asynch
+#					 fix) will be stored.
+# file_dict: File which contains translations from KEK datafiles to
+#	     	 desired sdds names.
+# gsad: Path to the SAD executable.
+# python_exe: Path to the python executable.
+# python3_exe: Path to the python3 executable.
+# =======================================================================
+#
+# From machine study
+#
+nturns = 2000
+ringID = HER
+lattice = model/HER_lattice.sad
+input_data_path = input/
+kickax = x
+#
+# For BetaBeat.src
+#
+BetaBeatsrc_path = /afs/cern.ch/work/j/jkeintze/public/Beta-Beat.src/
+# omc3_path = /afs/cern.ch/work/j/jkeintze/public/measure_optics_python3/omc3/omc3/
+omc3_path = /home/jacqueline/Work/omc3/omc3/
+model_path = model/
+#
+# For main code
+#
+main_output_path = output/
+unsynched_sdds_path = unsynched_sdds/
+synched_sdds_path = synched_sdds/
+file_dict = file_dict.txt
+#
+# Executables
+#
+gsad = /eos/experiment/fcc/ee/accelerator/SAD/oldsad/bin/gs
+python_exe = /afs/cern.ch/work/o/omc/anaconda/bin/python
+python3_exe = python3

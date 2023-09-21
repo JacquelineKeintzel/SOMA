@@ -1,0 +1,5 @@
+{
+    {"input_data_example/HER_2019_05_20_18_30_00.data", "HER_2019_05_20_18_30_00.sdds"},
+    {"input_data_example/HER_2019_05_20_18_30_09.data", "HER_2019_05_20_18_30_09.sdds"},
+    {"input_data_example/HER_2019_05_20_18_30_21.data", "HER_2019_05_20_18_30_21.sdds"}
+}

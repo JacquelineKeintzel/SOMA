@@ -1,0 +1,11 @@
+@ Energy	%s	450GeV
+@ Info		%s	Preliminary error definition file for SuperKEKB
+@ RELATIVE 	%s	MAINFIELD
+@ RADIUS 	%le	0.017
+
+*	PATTERN		dK1		dX		dS		MAINFIELD
+$	%s		%le		%le		%le		%s
+
+	^Q		0.01		0		0.000		QUAD
+	^S     		0      		0       	0.0001       	SEXT
+	^MQ    		0	    	0       	0       	BPM

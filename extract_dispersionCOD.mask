@@ -1,0 +1,16 @@
+FFS;
+Library@Require["%(RING)sOptics"];
+ring=%(RING)sOptics[];
+d=Get["%(DISP_FILE)s"];
+
+If[~FileQ["%(DISP_FILE)s"],Print["Not such file."];Exit[];];
+
+OpticsFile="OpticsFile"/.d;
+ring@ReadOpticsFile[OpticsFile];
+disp="DispData"/.d;
+
+f=OpenWrite[GetDirectory[]//"/COD_Dispersion.txt"];
+Write[f,disp];
+Close[f];
+
+Exit[];

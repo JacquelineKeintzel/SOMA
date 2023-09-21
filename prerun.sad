@@ -1,0 +1,17 @@
+read "model/HER_lattice.sad" ;
+
+FFS USE RING;
+CELL; CALC;
+emit;
+Get["func.n"];
+
+runs = Get["file_dict.txt"];
+Do[
+    fnr1 = "./"//runs[i, 1];
+    fbpm = "None";
+    fwt1 = "output/unsynched_sdds/"//runs[i, 2];
+    Print["Converting "//runs[i, 1]//" -> "//runs[i, 2]];
+    FormatBPMRead[fnr1, fwt1, fbpm];
+    ,{i, 1, Length[runs]}];
+
+abort;

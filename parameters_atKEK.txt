@@ -1,0 +1,53 @@
+# ======================================================================= 
+# EDIT THIS FILE ACCORDING TO NEED
+# nturns: Number of turns taken in measurement. Passed to harmonic analysis.
+# ringID: Name of the ring used for TbT acquisition, "HER" or "LER".
+# lattice: Path of the SAD lattice you will be using.
+# input_data_path: Path to directory containing KEK TbT data files.
+# kickax: Used in asynch analysis to determine which axis to analyse.
+#		  Generally, the axis in which kicks are applied has cleaner
+#		  data which is more suitable for analysis.
+# BetaBeatsrc_path: Path to the Beta-Beat.src package.
+# BetaBeatsrc_path: Path to the OMC3 package.
+# model_path: Directory into which the model information for
+#	     	  Beta-Beat.src scripts is stored (and where additional
+#			  information will be created).
+# main_output_path: Directory into which all output (not sdds files)
+#	      			will be placed.
+# unsynched_sdds_path: Where sdds files in the first stage (without
+#	    			   asynch fix) will be stored.
+# synched_sdds_path: Where sdds files in the second stage (with asynch
+#					 fix) will be stored.
+# file_dict: File which contains translations from KEK datafiles to
+#	     	 desired sdds names.
+# gsad: Path to the SAD executable.
+# python_exe: Path to the python executable.
+# python3_exe: Path to the python3 executable.
+# =======================================================================
+#
+# From machine study
+#
+nturns = 2000
+ringID = HER
+lattice = example_lattice.sad
+input_data_path = input_data_example/
+kickax = x
+#
+# For BetaBeat.src
+#
+BetaBeatsrc_path = /nfs/sadnas1a/users/jkeintze/Beta-Beat.src/
+omc3_path = /nfs/sadnas1a/users/jkeintze/omc3/omc3/
+model_path = model/
+#
+# For main code
+#
+main_output_path = output_example/
+unsynched_sdds_path = unsynched_sdds_example/
+synched_sdds_path = synched_sdds_example/
+file_dict = file_dict_example.txt
+#
+# Executables
+#
+gsad = /SAD/bin/gs -env skekb
+python_exe = python2.7
+python3_exe = /nfs/sadnas1a/users/jkeintze/py3/bin/python
