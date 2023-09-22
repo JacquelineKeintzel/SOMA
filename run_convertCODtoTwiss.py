@@ -40,10 +40,6 @@ are base on scripts obtained from Koiso-san.
 
 The converison to a twiss format is then done by python 3.
 
-
-Author: Jacqueline Keintzel
-Date: 09/12/2019
-
 '''
 
 import os

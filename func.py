@@ -581,7 +581,7 @@ def asynch_cmap(python_exe, sdds_path, optics_output_path, when='before'):
     for axis in ['x', 'y']:
         for form in ['png', 'pdf']:
             p = Popen([python_exe,
-                    'checkBPMs_colormap.py',
+                    'plotBPMcolormap.py',
                     '--axis', axis,
                     '--sdds_dir', sdds_path,
                     '--optics_output_dir', optics_output_path,
@@ -597,11 +597,11 @@ def asynch_cmap(python_exe, sdds_path, optics_output_path, when='before'):
 def bpm_calibration(python_exe, synched_sdds, synched_harmonic_output, synched_optics_output,
                     calibrated_harmonic_output, calibrated_optics_output, ringID):
     """
-    Function to call calibration.py script to calibrate amplitudes.
+    Function to call checkCalibration.py script to calibrate amplitudes.
     Warning: ONLY tested using python 3 !
     """
     for plane in ['x','y']:
-        os.system(python_exe + ' calibration.py'
+        os.system(python_exe + ' checkCalibration.py'
                     ' --sdds ' + synched_sdds +
                     ' --plane ' + plane +
                     ' --ring ' + ringID )
@@ -609,12 +609,12 @@ def bpm_calibration(python_exe, synched_sdds, synched_harmonic_output, synched_o
 
 def calib_hist(python_exe, synched_sdds, optics_output, when='before'):
     """
-    Function to call checkCALIBRATION_histogram.py to make histogram of
+    Function to call plotBPMCalibEstHist.py to make histogram of
     (beta_amp - beta_phase)/beta_phase  beating.
     """
     for plane in ['x', 'y']:
         for form in ['png', 'pdf']:
-            os.system(python_exe + ' checkCALIBRATION_histogram.py' +
+            os.system(python_exe + ' plotBPMCalibEstHist.py' +
                         ' --sdds ' + synched_sdds +
                         ' --phase ' + optics_output +
                         ' --axis ' + plane + 
@@ -624,11 +624,11 @@ def calib_hist(python_exe, synched_sdds, optics_output, when='before'):
 
 def freq_spec(python_exe, sdds, model):
     """
-    Function to call checkFrequency.py to make plot of frequency spectrum for each BPM.
+    Function to call plotFrequency.py to make plot of frequency spectrum for each BPM.
     """
     # for plane in ['x']:
     #     for form in ['png']:
-    os.system(python_exe + ' checkFrequency.py' +
+    os.system(python_exe + ' plotFrequency.py' +
                 ' --sdds ' + sdds +
                 ' --model ' + model )
                 # ' --axis ' + plane + 
@@ -872,7 +872,7 @@ def plot_optics(python_exe, optics_output, model, ringID):
     """
     for axis in ['x', 'y']:
         for pngpdf in ['png', 'pdf']:
-            os.system(python_exe + ' SKEKB_TbT_analysis/checkOptics.py ' +
+            os.system(python_exe + ' checkOptics.py ' +
                         ' --dir ' + optics_output +
                         ' --model ' + model + 
                         ' --axis ' + axis +
@@ -882,16 +882,16 @@ def plot_optics(python_exe, optics_output, model, ringID):
 
 def sdds_turns(python_exe, sdds):
     """
-    Function to call checkSDDS.py to make plot of measured beam positions over turns.
+    Function to call plotSDDS.py to make plot of measured beam positions over turns.
     """
-    os.system(python_exe + ' checkSDDS.py' +
+    os.system(python_exe + ' plotSDDS.py' +
                 ' --sdds ' + sdds )
                 # ' --axis ' + plane + 
                 # ' --pngpdf ' + form )
 
 
 # ====================================================
-# To be used in chekcAsync.py and calibration.py
+# To be used in chekcAsync.py and checkCalibration.py
 # ====================================================
 def read_phase(datapath, axis):
     """

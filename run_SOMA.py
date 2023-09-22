@@ -224,7 +224,7 @@ else: pass
 
 print(" ********************************************\n",
         "Everything comes to an end at some point...\n",
-        "Complete analysis is finished.\n",
+        "SuperKEKB Optics Measurements Analysis ends.\n",
         "********************************************")
 
 
