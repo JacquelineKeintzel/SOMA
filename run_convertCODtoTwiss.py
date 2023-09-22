@@ -4,19 +4,19 @@ given timestamp to file in TFS format including beta-functions
 and phase advances.
 
 
---betafile
+--beta
 should be the timestamp e.g.:
 /nfs/sadnas1a/ldata/SuperKEKB/KCG/HER/MeasOpt/2019/11/BETA_RAW_2019_11_21_17:58:18
 
---dispfile
+--disp
 should be the timestamp e.g.:
 /nfs/sadnas1a/ldata/SuperKEKB/KCG/HER/MeasOpt/2019/11/DISP_2019_11_12_12:40:54
 
---coupfile
+--coup
 should be the timestamp e.g.:
 /nfs/sadnas1a/ldata/SuperKEKB/KCG/HER/MeasOpt/2019/11/XYC_2019_11_29_15:41:16
 
---outputfile
+--output
 path to the new TFS file
 
 --ring

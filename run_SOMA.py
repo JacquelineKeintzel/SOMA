@@ -31,9 +31,9 @@ parser.add_argument('--plotsdds1', '-ps1',
 parser.add_argument('--plotfreq1', '-pf1',
                     action='store_true',
                     help='Plotting of frequency spectrum.')
-parser.add_argument('--optics1', '-p1',
+parser.add_argument('--optics1', '-o1',
                     action='store_true',
-                    help='Phase analysis of harmonic1 output without BPM synch knowledge.')
+                    help='Optics analysis of harmonic1 output without BPM synch knowledge.')
 parser.add_argument('--plotasynch1', '-pa1',
                     action='store_true',
                     help='Plotting of BPM synchronisation from optics1 output, before synch fix is applied.')
@@ -43,9 +43,15 @@ parser.add_argument('--asynch', '-aa',
 parser.add_argument('--harmonic2', '-h2',
                     action='store_true',
                     help='sdds conversion and harmonic analysis with knowledge of BPM synch.')
-parser.add_argument('--optics2', '-p2',
+parser.add_argument('--plotsdds2', '-ps2',
                     action='store_true',
-                    help='Phase analysis of harmonic2 output with knowledge of BPM synch.')
+                    help='Plotting of synchronized sdds files.')     
+parser.add_argument('--plotfreq2', '-pf2',
+                    action='store_true',
+                    help='Plotting of frequency spectrum after synchronization.')   
+parser.add_argument('--optics2', '-o2',
+                    action='store_true',
+                    help='Optics analysis of harmonic2 output with knowledge of BPM synch.')
 parser.add_argument('--plotoptics2', '-po2',
                     action='store_true',
                     help='Plots the optics repository after BPM synchronisation.')
@@ -55,9 +61,12 @@ parser.add_argument('--plotasynch2', '-pa2',
 parser.add_argument('--calib', '-c',
                     action='store_true',
                     help='Estimates the BPM calibration (beta from phase vs amplitude) for this measurement.')
-parser.add_argument('--optics3', '-p3',
+parser.add_argument('--optics3', '-o3',
                     action='store_true',
-                    help='Phase analysis of harmonic3 output with estimate of BPM calibration.')
+                    help='Optics analysis of harmonic3 output with estimate of BPM calibration.')
+parser.add_argument('--plotoptics3', '-po3',
+                    action='store_true',
+                    help='Plots the optics repository after BPM calibration.')
 parser.add_argument('--plotcalib1', '-pc1',
                     action='store_true',
                     help='Plotting of BPM calibration from optics2 output, before calibration is applied.')
@@ -66,7 +75,7 @@ parser.add_argument('--plotcalib2', '-pc2',
                     help='Plotting of BPM calibration from optics3 output, after calibration is applied.')
 parser.add_argument('--omc3', '-omc3',
                     action='store_true',
-                    help='Use OMC3 instead of BetaBeat.src.')
+                    help='Use OMC3/python3 instead of BetaBeat.src/python2.')
 args = parser.parse_args()
 
 # Read in destinations
@@ -170,6 +179,13 @@ if args.harmonic2 == True:
                       nturns, str(0.04), lattice, gsad)
 else: pass
 
+if args.plotsdds2 == True:
+    sdds_turns(python_exe, synched_sdds)
+else: pass
+
+if args.plotfreq2 == True:
+    freq_spec(python_exe, synched_sdds, model_path)
+else: pass
 
 # Phase analysis 2
 if args.optics2 == True:
@@ -215,6 +231,9 @@ if args.optics3 == True:
     except: pass
 else: pass
 
+if args.plotoptics3 == True:
+    plot_optics(python_exe, calibrated_optics_output, model_path, ringID)
+else: pass
 
 # Plotting BPM calibration post-calib
 if args.plotcalib2 == True:
