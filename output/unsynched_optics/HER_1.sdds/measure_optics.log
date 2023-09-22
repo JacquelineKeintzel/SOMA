@@ -1,0 +1,30 @@
+   INFO | Calculating phase advances | optics_measurements.phase
+   INFO | Measured tune in plane X = 0.5440644997816819 | optics_measurements.phase
+   INFO | Phase advance beating in phase_x.tfs = 0.12906817915828048 | optics_measurements.phase
+   INFO | Phase advance beating in total_phase_x.tfs = 0.3047094579285583 | optics_measurements.phase
+  DEBUG | Accelerator Error Definition | optics_measurements.beta_from_phase
+  DEBUG | Start creating uncertainty information | optics_measurements.beta_from_phase
+  DEBUG | creating uncertainty information for RegEx ^Q | optics_measurements.beta_from_phase
+  DEBUG | creating uncertainty information for RegEx ^S | optics_measurements.beta_from_phase
+  DEBUG | creating uncertainty information for RegEx ^MQ | optics_measurements.beta_from_phase
+  DEBUG | DONE creating uncertainty information | optics_measurements.beta_from_phase
+  DEBUG | No best knowledge model - using the normal one. | optics_measurements.beta_from_phase
+  DEBUG | No valid combinations for BPMs: []. | optics_measurements.beta_from_phase
+   INFO | Errors from Analytical N-BPM method | optics_measurements.beta_from_phase
+   INFO |  - RMS beta beat: 40.690% | optics_measurements.beta_from_phase
+  DEBUG | Accelerator SKekB has not get_ips method. | optics_measurements.interaction_point
+   INFO | Calculating phase advances | optics_measurements.phase
+   INFO | Measured tune in plane Y = 0.6049611656754105 | optics_measurements.phase
+   INFO | Phase advance beating in phase_y.tfs = 0.19697618171382436 | optics_measurements.phase
+   INFO | Phase advance beating in total_phase_y.tfs = 0.2940233554063797 | optics_measurements.phase
+  DEBUG | Accelerator Error Definition | optics_measurements.beta_from_phase
+  DEBUG | Start creating uncertainty information | optics_measurements.beta_from_phase
+  DEBUG | creating uncertainty information for RegEx ^Q | optics_measurements.beta_from_phase
+  DEBUG | creating uncertainty information for RegEx ^S | optics_measurements.beta_from_phase
+  DEBUG | creating uncertainty information for RegEx ^MQ | optics_measurements.beta_from_phase
+  DEBUG | DONE creating uncertainty information | optics_measurements.beta_from_phase
+  DEBUG | No best knowledge model - using the normal one. | optics_measurements.beta_from_phase
+  DEBUG | No valid combinations for BPMs: []. | optics_measurements.beta_from_phase
+   INFO | Errors from Analytical N-BPM method | optics_measurements.beta_from_phase
+   INFO |  - RMS beta beat: 186.489% | optics_measurements.beta_from_phase
+  DEBUG | Accelerator SKekB has not get_ips method. | optics_measurements.interaction_point

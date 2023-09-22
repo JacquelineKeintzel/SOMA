@@ -1,5 +1,5 @@
 """
-Script for analysing synchronisation of BPMs from phase data (output from measure_optics.py).
+Script for analysing synchronisation of BPMs from total phase advance measurement.
 This script outputs a text file discribing the number of turns each BPM is out of synch by.
 
 """
@@ -12,7 +12,7 @@ from func import read_phase, read_phasetot, read_bpms
 
 # Argument parser.
 parser = argparse.ArgumentParser()
-parser.add_argument('--phase_output_dir', '-pod', dest="pod", action="store")
+parser.add_argument('--optics_output_dir', '-ood', dest="ood", action="store")
 parser.add_argument('--async_output_dir', '-aod', dest="aod", action="store")
 parser.add_argument('--axis', '-ax', dest="axis", choices = ('x', 'y') ,action="store")
 parser.add_argument('--ring', '-r', dest="ring", choices = ('her', 'ler'), action="store")
@@ -21,16 +21,16 @@ args = parser.parse_args()
 
 
 # Check if phase output directory exists, if not, exit.
-if not os.path.exists(args.pod):
-    print("Directory", args.pod, "not found.")
+if not os.path.exists(args.ood):
+    print("Directory", args.ood, "not found.")
     sys.exit()
 # Check if output dir for the present script exists, if not, create one.
 if not os.path.exists(args.aod):
     os.system("mkdir " + args.aod)
 
 # Check for asynchronous BPMs in each measurement reun using phase output.
-for count, run in enumerate(os.listdir(args.pod)):
-    datapath = os.path.join(args.pod, run)
+for count, run in enumerate(os.listdir(args.ood)):
+    datapath = os.path.join(args.ood, run)
     # try:
         # S, names, deltaph, phx, phxmdl, Qx, Qy = phase(datapath, args.axis)
     # except IOError:

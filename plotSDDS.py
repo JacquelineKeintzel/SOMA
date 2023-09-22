@@ -22,7 +22,7 @@ if __name__ == "__main__":
     parser.add_option("-p", "--pngpdf",  dest="pngpdf", help="Format of plot.", action="store")
     (options, args) = parser.parse_args()
 
-    all_sdds = [sd for sd in os.listdir(options.sdds) if 'sdds' in sd]
+    all_sdds = [sd for sd in os.listdir(options.sdds) if '.sdds' in sd[-5:]]
 
     num=1
     for sdds in all_sdds:
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         fo.close()
 
         with PdfPages(os.path.join(options.sdds, str(sdds)+'_PosPlot.pdf')) as pdf:
-            for ll in range(len(lines)):
+            for ll in range(len(lines[:4])):
                 axis = 'x' if lines[ll].split()[0] == '0' else 'y'
                 bpm = lines[ll].split()[1]
                 print(bpm)

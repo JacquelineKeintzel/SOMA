@@ -35,8 +35,7 @@ kickax = x
 #
 # For BetaBeat.src
 #
-BetaBeatsrc_path = /afs/cern.ch/work/j/jkeintze/public/Beta-Beat.src/
-# omc3_path = /afs/cern.ch/work/j/jkeintze/public/measure_optics_python3/omc3/omc3/
+BetaBeatsrc_path = /home/jacqueline/Work/Beta-Beat.src/
 omc3_path = /home/jacqueline/Work/omc3/omc3/
 model_path = model/
 #
@@ -48,5 +47,5 @@ file_dict = file_dict.txt
 # Executables
 #
 gsad = /eos/experiment/fcc/ee/accelerator/SAD/oldsad/bin/gs
-python_exe = /afs/cern.ch/work/o/omc/anaconda/bin/python
+python_exe = python2
 python3_exe = python3

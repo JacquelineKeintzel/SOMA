@@ -391,7 +391,7 @@ def harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                     '--tune_clean_limit=1e-4']) # changed from 1e-5 to 10e-5 so that fewer BPMs are cleaned
             p.wait()
         finish = time.time() - start
-        timer('Harmonic analysis', i, len(sdds_files), finish)
+        # timer('Harmonic analysis', i, len(sdds_files), finish)
     return print(" ********************************************\n",
                  "Harmonics analysis finished.\n",
                  "********************************************")
@@ -442,15 +442,17 @@ def optics_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
     """
     if not os.path.exists(optics_output_path):
         os.system('mkdir ' + optics_output_path)
-    sdds_files = [ff for ff in os.listdir(sdds_path) if '.sdds' in ff ]
+    sdds_files = [ff for ff in os.listdir(sdds_path) if '.sdds' in ff[-5:] ]
     #sdds_files = [ff for ff in sdds_files if not 'cut' in ff]
 
-    times=[]
-    for sdds_file in sdds_files:
-        times.append(datetime.strptime(sdds_file[4:-5], '%Y_%m_%d_%H_%M_%S'))
-    indx = np.argsort(times)
-    sdds_files_sort = [sdds_files[i] for i in indx]
-    sdds_files = sdds_files_sort[:]
+    try:
+        times=[]
+        for sdds_file in sdds_files:
+            times.append(datetime.strptime(sdds_file[4:-5], '%Y_%m_%d_%H_%M_%S'))
+        indx = np.argsort(times)
+        sdds_files_sort = [sdds_files[i] for i in indx]
+        sdds_files = sdds_files_sort[:]
+    except: pass
     
     print("*******************************************\n",
           "Optics analysis starts\n",
@@ -505,7 +507,7 @@ def optics_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                         '--model_dir', model_path,
                         '--accel', 'skekb',
                         '--ring', ringID,
-                        ' --nonlinear rdt',
+                        # ' --nonlinear rdt',
                         '--compensation','none'])
             else:
                 p = Popen([python_exe,
@@ -516,16 +518,9 @@ def optics_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                         '-b','m',
                         '--coupling', '0',
                         '--output', os.path.join(optics_output_path, run)])      
-                # DO NOT USE MEASURE OPTICS IN PYTHON 2 UNLESS YOU WANT TO CHECK SOMETHING
-                # p = Popen([python_exe,
-                #         BetaBeatsrc_path + 'measure_optics.py',
-                #         '--model', model_path,
-                #         '--accel', 'skekb',
-                #         '--files', harmonic_output_path + run,
-                #         '--output', optics_output_path + run + '/'])
             p.wait()
             finish = time.time() - start
-            timer('Optics analysis [single]', i, len(sdds_files), finish)
+            # timer('Optics analysis [single]', i, len(sdds_files), finish)
          
     return print("*******************************************\n",
           "Optics analysis finished \n",
@@ -534,7 +529,7 @@ def optics_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
 
 def asynch_analysis(python_exe, optics_output_path, main_output_path, model_path, ringID):
     """
-    Function to call chekcAsync.py script to check phase output for
+    Function to call checkAsync.py script to check phase output for
     unsynched BPMs.
     """
     sdds_dir = os.path.join(main_output_path, 'unsynched_sdds')
@@ -542,7 +537,7 @@ def asynch_analysis(python_exe, optics_output_path, main_output_path, model_path
 
     for axis in ['x', 'y']:
         os.system(str(python_exe)+
-                   ' chekcAsync.py'
+                   ' checkAsync.py'
                    ' --optics_output_dir '+ optics_output_path +
                    ' --async_output_dir '+ main_output_path + 'outofphase' + axis + '/'+
                    ' --sdds ' + str(sdds) +
@@ -594,8 +589,7 @@ def asynch_cmap(python_exe, sdds_path, optics_output_path, when='before'):
                  "********************************************")
 
 
-def bpm_calibration(python_exe, synched_sdds, synched_harmonic_output, synched_optics_output,
-                    calibrated_harmonic_output, calibrated_optics_output, ringID):
+def bpm_calibration(python_exe, synched_sdds, ringID):
     """
     Function to call checkCalibration.py script to calibrate amplitudes.
     Warning: ONLY tested using python 3 !
@@ -891,7 +885,7 @@ def sdds_turns(python_exe, sdds):
 
 
 # ====================================================
-# To be used in chekcAsync.py and checkCalibration.py
+# To be used in checkAsync.py and checkCalibration.py
 # ====================================================
 def read_phase(datapath, axis):
     """
@@ -995,7 +989,7 @@ def read_bet_phase(folder, plane):
     fo.close()
     beta_phase = [float(lines[i].split()[5]) for i in range(len(lines))]
     beta_phase_err = [float(lines[i].split()[6]) for i in range(len(lines))]
-    bpms = [lines[i].split()[0] for i in range(len(lines))]
+    bpms = [lines[i].split()[0].replace('"','') for i in range(len(lines))]
     return beta_phase, beta_phase_err, bpms
 
 
@@ -1136,7 +1130,7 @@ def get_data_column(optics_output_dir, folder, data, column):
     all_dat = {}
     for i in range(len(headers)):
         if headers[i] in ['NAME', 'NAME2', 'TYPENAME']:
-            all_dat[headers[i]] = [rows[j].split()[i] for j in range(len(rows))]
+            all_dat[headers[i]] = [rows[j].split()[i].replace('"','') for j in range(len(rows))]
         else:
             all_dat[headers[i]] = [float(rows[j].split()[i]) for j in range(len(rows))]
     return all_dat[column]

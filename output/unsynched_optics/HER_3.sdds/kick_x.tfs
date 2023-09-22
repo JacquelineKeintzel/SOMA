@@ -1,0 +1,12 @@
+@ Measure_optics:version %s              "0.2.0"
+@ Command              %s "/usr/bin/python3 /home/jacqueline/Work/omc3/omc3/hole_in_one.py --optics --files output/unsynched_harmonic/HER_3.sdds --outputdir output/unsynched_optics/HER_3.sdds --model_dir model/ --accel skekb --ring her --compensation none"
+@ CWD                  %s "/home/jacqueline/Work/SuperKEKB/SOMA"
+@ Date                 %s "22. September 2023, 13:41:14"
+@ Model_directory      %s             "model/"
+@ Compensation         %s               "None"
+@ Q1                   %le    0.544120420109142
+@ Q2                   %le   0.6051915319342362
+@ RescalingFactorX     %le   1.1932111217896926
+*                 TIME                  DPP               DPPAMP                   QX                ERRQX                NATQX             ERRNATQX              sqrt2JX           ERRsqrt2JX                  2JX               ERR2JX           sqrt2JXRES        ERRsqrt2JXRES               2JXRES            ERR2JXRES
+$                   %s                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le
+  "2023_09_22@13_16_43_136291"                    0                    0       0.544120420109    1.23877016129e-05       0.544120420109    1.23877016129e-05    0.000338159726226    8.33446392776e-05    1.21298329337e-07    6.72705692634e-08    0.000403495946274    9.94477505275e-05     1.4473451562e-07    8.02679914142e-08

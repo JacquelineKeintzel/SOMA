@@ -1,0 +1,14 @@
+@ Measure_optics:version %s              "0.2.0"
+@ Command              %s "/usr/bin/python3 /home/jacqueline/Work/omc3/omc3/hole_in_one.py --optics --accel skekb --ring her --compensation none --nonlinear rdt --second_order_dispersion --model_dir model/ --outputdir output/unsynched_optics/average/ --files output/unsynched_harmonic/HER_3.sdds output/unsynched_harmonic/HER_1.sdds output/unsynched_harmonic/HER_2.sdds"
+@ CWD                  %s "/home/jacqueline/Work/SuperKEKB/SOMA"
+@ Date                 %s "22. September 2023, 13:41:53"
+@ Model_directory      %s             "model/"
+@ Compensation         %s               "None"
+@ Q1                   %le    0.543999461120218
+@ Q2                   %le   0.6050975956983863
+@ RescalingFactorX     %le   1.2002895269828102
+*                 TIME                  DPP               DPPAMP                   QX                ERRQX                NATQX             ERRNATQX              sqrt2JX           ERRsqrt2JX                  2JX               ERR2JX           sqrt2JXRES        ERRsqrt2JXRES               2JXRES            ERR2JXRES
+$                   %s                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le                  %le
+  "2023_09_22@13_16_43_136291"                    0                    0       0.544120420109    1.23877016129e-05       0.544120420109    1.23877016129e-05    0.000338159726226    8.33446392776e-05    1.21298329337e-07    6.72705692634e-08    0.000405889577836    0.000100037697655    1.45593114344e-07     8.0744159761e-08
+  "2023_09_22@13_16_50_277379"                    0                    0       0.544064499782     1.9906817223e-06       0.544064499782     1.9906817223e-06    0.000335753705868    8.11785433698e-05    1.19320506907e-07    6.46864038767e-08    0.000403001656799    9.74377554225e-05    1.43219154795e-07    7.76424131113e-08
+  "2023_09_22@13_16_58_392364"                    0                    0        0.54395344074    1.63570440815e-06        0.54395344074    1.63570440815e-06    0.000338184309175    7.99876116527e-05     1.2076664499e-07     6.4421267053e-08    0.000405919084493    9.60082925552e-05    1.44954939191e-07    7.73241721586e-08

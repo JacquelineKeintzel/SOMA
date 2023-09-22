@@ -15,7 +15,7 @@ from func import BPMs_from_sdds, get_data_column, get_dict_colormap
 # Argument parser
 parser = argparse.ArgumentParser()
 parser.add_argument('--axis', '-ax', dest='axis', action='store')
-parser.add_argument('--phase_output_dir', '-pod', dest='phase_output_dir', action='store')
+parser.add_argument('--optics_output_dir', '-ood', dest='optics_output_dir', action='store')
 parser.add_argument('--sdds_dir', '-sd', dest='sdds_dir', action='store')
 parser.add_argument('--display', '-d', action='store_true')
 parser.add_argument('--when', choices=['before', 'after'])
@@ -26,13 +26,14 @@ args = parser.parse_args()
 # Definitions
 axis = args.axis
 sdds_dir = args.sdds_dir
-phase_output_dir = args.phase_output_dir
+optics_output_dir = args.optics_output_dir
 # data = 'getphasetot' + axis.lower() + '.out'
 data = 'total_phase_' + axis.lower() + '.tfs'
 
 
-# List all folders in phase_output_dir
-phase_folders = [ff for ff in os.listdir(phase_output_dir) if 'av' not in ff]
+# List all folders in optics_output_dir
+phase_folders = [ff for ff in os.listdir(optics_output_dir) if 'av' not in ff]
+
 
 # List all BPMs from any sdds file
 bpms = BPMs_from_sdds(os.path.join(sdds_dir, os.listdir(sdds_dir)[1]))
@@ -42,8 +43,8 @@ bpms = BPMs_from_sdds(os.path.join(sdds_dir, os.listdir(sdds_dir)[1]))
 df = {}
 for folder in phase_folders:
     df[folder] = []
-    names = get_data_column(phase_output_dir, folder, data, 'NAME')
-    deltaphase = get_data_column(phase_output_dir, folder, data, 'DELTAPHASE' + axis.upper())
+    names = get_data_column(optics_output_dir, folder, data, 'NAME')
+    deltaphase = get_data_column(optics_output_dir, folder, data, 'DELTAPHASE' + axis.upper())
     for bpm in bpms:
         try:
             df[folder].append(get_dict_colormap(names, deltaphase)[bpm])
@@ -63,9 +64,9 @@ cm = colors.ListedColormap(cmatrix)
 hor_ax, ver_ax = np.meshgrid(
     np.linspace(0, len(bpms), len(bpms) + 1),
     np.linspace(0, len(phase_folders), len(phase_folders) + 1))
-df.to_csv(phase_output_dir + '../cmapdfnoTranspose_' + axis+args.when + '.csv')
+df.to_csv(optics_output_dir + '../cmapdfnoTranspose_' + axis+args.when + '.csv')
 Z = df.T
-fn = phase_output_dir + '../cmapdf_' + axis+args.when + '.csv'
+fn = optics_output_dir + '../cmapdf_' + axis+args.when + '.csv'
 Z.to_csv(fn)
 Z = pandas.read_csv(fn, index_col=0)
 Z = np.ma.masked_where(np.isnan(Z),Z)
@@ -116,7 +117,7 @@ plt.tight_layout()
 
 
 if args.save == True:
-    plt.savefig(phase_output_dir + '../BPMs_colourmap_'+axis.upper()+args.when+'.'+args.form)
+    plt.savefig(optics_output_dir + '../BPMs_colourmap_'+axis.upper()+args.when+'.'+args.form)
 if args.display == True:
     plt.show()
 plt.close()
