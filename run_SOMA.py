@@ -126,7 +126,7 @@ if args.harmonic1 == True:
                       unsynched_harmonic_output, unsynched_sdds,
                       nturns, str(0.04), lattice, gsad)
 else: pass
-quit()
+# quit()
 
 if args.plotsdds1 == True:
     sdds_turns(python_exe, unsynched_sdds)
