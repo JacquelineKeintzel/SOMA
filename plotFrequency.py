@@ -7,9 +7,6 @@ from optparse import OptionParser
 import numpy as np 
 import matplotlib.pyplot as plt
 import os
-# import sys
-# sys.path.append('/afs/cern.ch/work/j/jkeintze/public/Beta-Beat.src/Python_Classes4MAD')
-# import metaclass
 from func import read_bpms
 from matplotlib.backends.backend_pdf import PdfPages
 

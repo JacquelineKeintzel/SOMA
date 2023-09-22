@@ -1,8 +1,6 @@
 """
 Script to cut too long sdds file into smaller one by reducing turn number.
 
-Author: Jacqueline Keintzel
-Date: 27/11/2019
 """
 
 from __future__ import print_function

@@ -1,8 +1,6 @@
 !**************************************************************
 ! Functions for superkekb BPM data formation (for k-modulation
 ! study) and Twiss parameter saving
-! some parts are taken from A. Wegscheider's script
-! by Renjun Yang (2010-02-01)
 !**************************************************************
 
 (* globle variables *)

@@ -30,7 +30,7 @@
 nturns = 2000
 ringID = HER
 lattice = example_lattice.sad
-input_data_path = input_data_example/
+input_data_path = input/
 kickax = x
 #
 # For BetaBeat.src
@@ -41,10 +41,8 @@ model_path = model/
 #
 # For main code
 #
-main_output_path = output_example/
-unsynched_sdds_path = unsynched_sdds_example/
-synched_sdds_path = synched_sdds_example/
-file_dict = file_dict_example.txt
+main_output_path = output/
+file_dict = file_dict.txt
 #
 # Executables
 #

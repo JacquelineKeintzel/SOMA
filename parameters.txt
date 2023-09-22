@@ -43,8 +43,6 @@ model_path = model/
 # For main code
 #
 main_output_path = output/
-unsynched_sdds_path = unsynched_sdds/
-synched_sdds_path = synched_sdds/
 file_dict = file_dict.txt
 #
 # Executables
