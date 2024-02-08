@@ -77,7 +77,11 @@ These scripts can only be run at SKEKB cluster with required access right.
 SAD can be run using */SAD/bin/gs -env skekb* from the command line.
 
 
-To get the SAD lattice which is used at a specific measurement acquisition time run *extract\_sadlattice.sad* from the command line. 
+Measurement files are stored in the following repository and should be copied to the personal folder:
+*/nfs/sadstorage-ldata/SuperKEKB/KCG/SAD/BM/TBT/data/*
+
+
+To get the SAD lattice which is used at a specific measurement acquisition time run *extract\_sadlattice.sad* from the command line. Please note that the ring (HER or LER) and the measurement file for which the lattice should be extracted must be changed lines 2, 7 and 13.
 
 
 To extract beam current in a specific time interval, run the following command:
