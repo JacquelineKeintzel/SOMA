@@ -85,8 +85,8 @@ SAD can be run using */SAD/bin/gs -env skekb* from the command line.
 
 
 Measurement files are stored in the following repository and should be copied to the personal folder:
-- In alsad1: */nfs/sadstorage-ldata/SuperKEKB/KCG/SAD/BM/TBT/data/2024/*
-- In afsad1: */ldata/SuperKEKB/KCG/SAD/BM/TBT/data/*
+- In alsad1: */nfs/sadstorage-ldata/SuperKEKB/KCG/SAD/BM/TBT/data/2024/02/06*
+- In afsad1: */ldata/SuperKEKB/KCG/SAD/BM/TBT/data/2024/02/06*
 
 
 Chromaticity files are stored in the following repository and should be copied to the personal folder:
