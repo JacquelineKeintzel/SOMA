@@ -93,7 +93,8 @@ Chromaticity files are stored in the following repository and should be copied t
 */ldata/SuperKEKB/KCG/LER/SXP/2024/02/*
 
 
-To get the SAD lattice which is used at a specific measurement acquisition time run *extract\_sadlattice.sad* from the command line. Please note that the ring (HER or LER) and the measurement file for which the lattice should be extracted must be changed lines 2, 7 and 13.
+To get the SAD lattice which is used at a specific measurement acquisition time run *extract\_sadlattice.sad* from the command line. Please note that the ring (HER or LER) and the measurement file for which the lattice should be extracted must be changed lines 2, 7 and 13. 
+WARNING: This only works on afsad1!
 
 
 To extract beam current in a specific time interval, run the following command:
