@@ -272,7 +272,7 @@ def harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
     """
     Function to call hole_in_one.py script from BetaBeat.src or omc3.
     """
-    # makemodel_and_guesstune(model_path, lattice, gsad)
+    makemodel_and_guesstune(model_path, lattice, gsad)
     import math
     with open(os.path.join(model_path, 'twiss.dat')) as mdl:
         lines = mdl.readlines()
@@ -302,7 +302,7 @@ def harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
     
     max_peak = '10.0'
     tunez = '0'
-    tune_range = '0.02'
+    tune_range = '0.1'
     if not os.path.exists(harmonic_output_path):
         os.system('mkdir ' + harmonic_output_path) 
 
@@ -327,32 +327,15 @@ def harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
             #         ' --turns ' + tunez + ' ' + nturns +
             #         ' --tolerance ' + tune_range +
             #         ' --unit mm' # ("m", "cm", "mm", "um")
-            #         ' --keep_exact_zeros'
-            #         ' --to_write spectra bpm_summary lin full_spectra'
+            #         # ' --keep_exact_zeros'
+            #         # ' --to_write spectra bpm_summary lin full_spectra'
+            #         # ' --to_write lin full_spectra'
+            #         ' --to_write lin'
             #         ' --clean'
+            #         ' --sing_val 20' 
             #         ' --max_peak ' + max_peak +
-            #         ' --tune_clean_limit 1e-4')
-            # quit()
-            print(str(python_exe) +' '
-                    +str(BetaBeatsrc_path) + 'hole_in_one.py'
-                    ' --harpy'
-                    ' --files ' + os.path.join(sdds_path, run) +
-                    ' --outputdir ' + harmonic_output_path + 
-                    ' --model '+ model_path + 'twiss.dat'
-                    ' --tunes '+ drv_tunex + ' ' + drv_tuney + ' ' + tunez +
-                    ' --nattunes ' + model_tunex + ' ' + model_tuney + ' ' + tunez+
-                    ' --turns ' + tunez + ' ' + nturns +
-                    ' --tolerance ' + tune_range +
-                    ' --unit mm' # ("m", "cm", "mm", "um")
-                    # ' --keep_exact_zeros'
-                    # ' --to_write spectra bpm_summary lin full_spectra'
-                    # ' --to_write lin full_spectra'
-                    ' --to_write lin'
-                    ' --clean'
-                    ' --sing_val 20' 
-                    ' --max_peak ' + max_peak +
-                    ' --tune_clean_limit 1e-3'
-            )
+            #         ' --tune_clean_limit 1e-3'
+            # )
 
             os.system(str(python_exe) +' '
                     +str(BetaBeatsrc_path) + 'hole_in_one.py'
@@ -369,7 +352,7 @@ def harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                     # ' --to_write spectra bpm_summary lin full_spectra'
                     # ' --to_write lin full_spectra'
                     ' --to_write lin'
-                    ' --clean'
+                    # ' --clean'
                     ' --sing_val 20' 
                     ' --max_peak ' + max_peak +
                     ' --tune_clean_limit 1e-3')        
@@ -475,8 +458,8 @@ def optics_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                     ' --accel skekb'
                     ' --ring '+str(ringID)+
                     ' --compensation none'
-                    ' --nonlinear rdt'
-                    ' --second_order_dispersion'
+                    # ' --nonlinear rdt'
+                    # ' --second_order_dispersion'
                     #' --union'
                     ' --model_dir '+str(model_path)+
                     ' --outputdir '+str(os.path.join(optics_output_path, 'average/' ))+
