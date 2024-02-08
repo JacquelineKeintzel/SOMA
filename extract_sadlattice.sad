@@ -4,7 +4,7 @@ Library@Require["LEROptics","HEROptics"];
 ring=If[ring$name=="LER", LEROptics[], HEROptics[]];
 Get["func.n"];
 
-fn = "/ldata/SuperKEKB/KCG/SAD/BM/TBT/data/HER_2024_02_06_15_25_34.data";
+fn = "/ldata/SuperKEKB/KCG/SAD/BM/TBT/data/2024/02/06/HER_2024_02_06_15_25_34.data";
 dat0=Get[fn];
 opticsname=dat0[1,3];
 ring@ReadOpticsFile[opticsname];
