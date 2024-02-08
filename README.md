@@ -69,7 +69,20 @@ Plotting of the recorded orbit data, the frequency output, BPM synchronization c
     -o2 <- -c
 
 
-# 3 COD measurements
+# 3 Get data from SKEKB server 
+
+These scripts can only be run at SKEKB cluster with required access right.
+
+
+SAD can be run using */SAD/bin/gs -env skekb* from the command line.
+
+
+To get the SAD lattice which is used at a specific measurement acquisition time run *extract\_sadlattice.sad* from the command line. 
+
+
+To extract beam current in a specific time interval, run the following command:
+*/usr/local/bin/kblogrdc -t 20210222190000-20210222194300d1 -r BMLDCCT:CURRENT, MHDCCT:CURRENT -f 'kaleida' BM/DCCT > cur_2021_02_22_19_40_00.txt*
+
 
 This code allows to extract measurements obtained from Closed Orbit Distortion (COD) and converts them to a twiss-file.
 
