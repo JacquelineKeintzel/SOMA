@@ -10,7 +10,7 @@ opticsname=dat0[1,3];
 ring@ReadOpticsFile[opticsname];
 ! end;
 CALC;
-CreatePlainDeck["lattice/"//"HER_2024_02_06_15_25_34.data", "RING"];
+CreatePlainDeck["HER_2024_02_06_15_25_34.data", "RING"];
 
 
 abort;
