@@ -65,6 +65,7 @@ Concerning the optional arguments, the following commands depend, expressed by "
 
 Plotting of the recorded orbit data, the frequency output, BPM synchronization colormap (i.e. total phase advance error with respect to the model), BPM calibration estimate and the optics can be called and depend on previous analysis, e.g:
     -h1 <- -pf1
+    -o1 <- -pa1
     -o2 <- -po2
     -o2 <- -c
 
@@ -80,26 +81,36 @@ With these permissions one can access the following servers:
 - *afsad1* : ssh user@afsad1.kek.jp
 - *alsad1* : ssh user@alsad1.kek.jp
 
-
 SAD can be run using */SAD/bin/gs -env skekb* from the command line.
 
+
+## How to get TbT measurement data
 
 Measurement files are stored in the following repository and should be copied to the personal folder:
 - In alsad1: */nfs/sadstorage-ldata/SuperKEKB/KCG/SAD/BM/TBT/data/2024/02/06*
 - In afsad1: */ldata/SuperKEKB/KCG/SAD/BM/TBT/data/2024/02/06*
 
 
+## How to get chromaticity data
+
 Chromaticity files are stored in the following repository and should be copied to the personal folder:
 */ldata/SuperKEKB/KCG/LER/SXP/2024/02/*
 
 
-To get the SAD lattice which is used at a specific measurement acquisition time run *extract\_sadlattice.sad* from the command line. Please note that the ring (HER or LER) and the measurement file for which the lattice should be extracted must be changed lines 2, 7 and 13. 
-**<WARNING>**: This only works on afsad1!
+## How to get a lattice
 
+To get the SAD lattice which is used at a specific measurement acquisition time run *extract\_sadlattice.sad* from the command line. Please note that the ring (HER or LER) and the measurement file for which the lattice should be extracted must be changed lines 2, 7 and 13. 
+***WARNING***: This is only tested on afsad1!
+***WARNING***: Without the correct lattice the convesion to sdds will not work!
+
+
+## How to get beam currents
 
 To extract beam current in a specific time interval, run the following command:
 */usr/local/bin/kblogrdc -t 20210222190000-20210222194300d1 -r BMLDCCT:CURRENT, MHDCCT:CURRENT -f 'kaleida' BM/DCCT > cur_2021_02_22_19_40_00.txt*
 
+
+## How to get COD measurement files
 
 This code allows to extract measurements obtained from Closed Orbit Distortion (COD) and converts them to a twiss-file.
 
