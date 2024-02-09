@@ -170,8 +170,8 @@ else: pass
 
 # Second sdds conversion (with knowledge of BPM synch) and harmonic analysis 2
 if args.harmonic2 == True:
-    # sdds_conv(input_data, file_dict, main_output, synched_sdds,
-    #           lattice, gsad, ringID, kickax, asynch_info=True)
+    sdds_conv(input_data, file_dict, main_output, synched_sdds,
+              lattice, gsad, ringID, kickax, asynch_info=True)
 
     cut_large_sdds(python_exe, synched_sdds)
 
