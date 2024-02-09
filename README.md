@@ -106,8 +106,22 @@ To get the SAD lattice which is used at a specific measurement acquisition time 
 
 ## How to get beam currents
 
-To extract beam current in a specific time interval, run the following command:
-*/usr/local/bin/kblogrdc -t 20210222190000-20210222194300d1 -r BMLDCCT:CURRENT, MHDCCT:CURRENT -f 'kaleida' BM/DCCT > cur_2021_02_22_19_40_00.txt*
+To extract beam current in a specific time interval, run the following command (**L** or **H**):
+*/usr/local/bin/kblogrdc -t 20240207105030-20240207115030d1 -r BM**H**DCCT:CURRENT -f free BM/DCCT*
+
+
+## How to get the betatron tunes
+
+To extract beam tunes run the following in afsad1 (**L** or **H**; **X** or **Y**):
+
+*/usr/local/bin/kblogrdc -t 20240207105030-20240207115030d1 -r CG**H**OPT:GATED_TUNE_**X**:MEAS -f free Misc/Misc*
+
+
+## How to get the injecting kicker strenghts for TbT kicks
+
+To extract IK kicker strengths run the following in afsad1 (**L** or **H**):
+
+*/usr/local/bin/kblogrdc -t 20240207105030-20240207115030d1 -r CG**H**INJ:KICKER:JUMP_R -f free Misc/Misc*
 
 
 ## How to get COD measurement files
