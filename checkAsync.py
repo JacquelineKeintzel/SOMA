@@ -50,7 +50,7 @@ for count, run in enumerate(os.listdir(args.ood)):
     i=0
     while j < len(namesmdl):
         try:
-            if namesmdl[j] == names[i]:
+            if namesmdl[j] in names[i]:
                 if deltaphtot[i] / tune >= deltaQ:
                     level.append('-1') if args.ring == 'her' else level.append('+1') 
                 elif deltaphtot[i] / tune <= -deltaQ:
