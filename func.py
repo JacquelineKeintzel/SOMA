@@ -233,7 +233,7 @@ def makemodel_and_guesstune(model_path, lattice, gsad):
     )
     file.close()
 
-    
+
     fn = 'model_and_tune.sad'
     file = open(fn, "w")
     file.write(#'FFS;\n\n'
@@ -867,7 +867,7 @@ def plot_optics(python_exe, optics_output, model, ringID):
     """
     for axis in ['x', 'y']:
         for pngpdf in ['png', 'pdf']:
-            os.system(python_exe + ' checkOptics.py ' +
+            os.system(python_exe + ' plotOptics.py ' +
                         ' --dir ' + optics_output +
                         ' --model ' + model + 
                         ' --axis ' + axis +
