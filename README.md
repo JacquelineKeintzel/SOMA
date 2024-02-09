@@ -18,8 +18,8 @@ This code is used to analyse SuperKEKB Turn-by-Turn Optics measurements as follo
 2) Run *run\_SOMA.py* from the command line. The following options are available:
 
 Mandatory arguments are:
-- **"- -pathnames":**
-Path to *pathnames.txt* file, which contains all other paths necessary for the package.
+- **"- -parameters":**
+Path to *parameters.txt* file, which contains all other paths necessary for the package.
 
 Optional arguments are:
 - **"- -harmonic1"/"-h1":**
@@ -74,7 +74,7 @@ Plotting of the recorded orbit data, the frequency output, BPM synchronization c
 
 These scripts can only be run at SKEKB cluster with required access right. Connection requires the following: 
 
-- *VPN connection* : To requested at https://ccportal.kek.jp/accounts/login/?next=/application/
+- *VPN connection* : To be requested at https://ccportal.kek.jp/accounts/login/?next=/application/
 - *KEK computing account* : To be requested "For general users" at https://acc-physics.kek.jp/SAD/links/account_eng/
 
 With these permissions one can access the following servers:
