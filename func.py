@@ -215,7 +215,25 @@ def makemodel_and_guesstune(model_path, lattice, gsad):
             else:
                 print('Please enter a valid input ("y" or "n").')
                 continue
-        
+    
+    fn = model_path+'/error_deffs.txt'
+    file = open(fn, "w")
+    file.write(
+        "@ Energy	%s	4 or 7 GeV\n"
+        "@ Info		%s	Preliminary error definition file for SuperKEKB\n"
+        "@ RELATIVE 	%s	MAINFIELD\n"
+        "@ RADIUS 	%le	0.017\n\n"
+
+        "*	PATTERN		dK1		dX		dS		MAINFIELD\n"
+        "$	%s		%le		%le		%le		%s\n\n"
+
+        "    ^Q		0.001		0		0.000		QUAD\n"
+        "    ^S     		0      		0       	0.0001       	SEXT\n"
+        "    ^MQ    		0	    	0       	0       	BPM\n"
+    )
+    file.close()
+
+    
     fn = 'model_and_tune.sad'
     file = open(fn, "w")
     file.write(#'FFS;\n\n'
