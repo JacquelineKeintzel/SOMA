@@ -342,7 +342,7 @@ def harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
             #         ' --model '+ model_path + 'twiss.dat'
             #         ' --tunes '+ drv_tunex + ' ' + drv_tuney + ' ' + tunez +
             #         ' --nattunes ' + model_tunex + ' ' + model_tuney + ' ' + tunez+
-            #         ' --turns ' + tunez + ' ' + nturns +
+            #         ' --turns 0 ' + nturns +
             #         ' --tolerance ' + tune_range +
             #         ' --unit mm' # ("m", "cm", "mm", "um")
             #         # ' --keep_exact_zeros'
@@ -363,7 +363,7 @@ def harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                     ' --model '+ model_path + 'twiss.dat'
                     ' --tunes '+ drv_tunex + ' ' + drv_tuney + ' ' + tunez +
                     ' --nattunes ' + model_tunex + ' ' + model_tuney + ' ' + tunez+
-                    ' --turns ' + tunez + ' ' + nturns +
+                    ' --turns 0 ' + nturns +
                     ' --tolerance ' + tune_range +
                     ' --unit mm' # ("m", "cm", "mm", "um")
                     # ' --keep_exact_zeros'
