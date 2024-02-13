@@ -9,7 +9,7 @@ import sys
 
 from func import read_parameters, sdds_conv, harmonic_analysis, optics_analysis, asynch_analysis
 from func import asynch_cmap, bpm_calibration, calib_hist, freq_spec, chromatic_analysis
-from func import plot_optics, coupling_analysis, sdds_turns, cut_large_sdds
+from func import plot_optics, coupling_analysis, sdds_turns, cut_large_sdds, makemodel_and_guesstune
 
 parser = argparse.ArgumentParser()
 required = parser.add_argument_group('required arguments')
@@ -22,6 +22,9 @@ required.add_argument('--parameters',
 parser.add_argument('--all_files', '-all',
                     action='store_true',
                     help='To be used when all files should run at once, e.g. for dispersion measurement with off-momentum files.')
+parser.add_argument('--model',
+                    action='store_true',
+                    help='Creates a model based on the lattice provided in parameters.')
 parser.add_argument('--convert1', '-c1',
                     action='store_true',
                     help='sdds conversion with NO knowledge of BPM synch.')
@@ -129,18 +132,23 @@ else:
     BetaBeatsrc_path = parameters["BetaBeatsrc_path"]
 
 
-
 # First conversion and harmonic analysis 1
 if args.convert1 or args.harmonic1:
     sdds_conv(input_data, file_dict, main_output, unsynched_sdds,
               lattice, gsad, ringID, kickax, asynch_info=False)
 
     cut_large_sdds(python_exe, unsynched_sdds)
-if args.harmonic1 == True:
+
+
+# Create a model to be used by hole in one
+if args.model or args.harmonic1 or args.harmonic2:
+    makemodel_and_guesstune(model_path, lattice, gsad)
+
+
+if args.harmonic1:
     harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                       unsynched_harmonic_output, unsynched_sdds,
                       nturns, str(0.04), lattice, gsad)
-else: pass
 
 
 if args.plotsdds1 == True:
