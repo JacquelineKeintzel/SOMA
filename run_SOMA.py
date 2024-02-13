@@ -17,8 +17,6 @@ required.add_argument('--parameters',
                     action='store',
                     dest='parameters',
                     help='Path to parameters.txt file, which contains all other paths necessary for this script.')
-
-
 parser.add_argument('--all_files', '-all',
                     action='store_true',
                     help='To be used when all files should run at once, e.g. for dispersion measurement with off-momentum files.')
@@ -104,8 +102,7 @@ model_path = parameters["model_path"]
 main_output = parameters["main_output_path"]
 if not os.path.exists(main_output):
     os.system('mkdir ' + main_output)
-else:
-    pass
+
 unsynched_sdds = os.path.join(main_output, 'unsynched_sdds/')
 synched_sdds = os.path.join(main_output, 'synched_sdds/')
 file_dict = parameters["file_dict"]
@@ -122,7 +119,7 @@ calibrated_harmonic_output = os.path.join(main_output, 'calibrated_harmonic/')
 calibrated_optics_output = os.path.join(main_output, 'calibrated_optics/')
 
 
-if args.omc3 == True:
+if args.omc3:
     py_version = 3
     python_exe = parameters["python3_exe"]
     BetaBeatsrc_path = parameters["omc3_path"]
@@ -132,79 +129,66 @@ else:
     BetaBeatsrc_path = parameters["BetaBeatsrc_path"]
 
 
-# First conversion and harmonic analysis 1
+# First SDDS conversion
 if args.convert1 or args.harmonic1:
     sdds_conv(input_data, file_dict, main_output, unsynched_sdds,
               lattice, gsad, ringID, kickax, asynch_info=False)
 
     cut_large_sdds(python_exe, unsynched_sdds)
 
-
 # Create a model to be used by hole in one
 if args.model or args.harmonic1 or args.harmonic2:
     makemodel_and_guesstune(model_path, lattice, gsad)
 
-
+# First harmonic analysis with unsynced BPMs
 if args.harmonic1:
     harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                       unsynched_harmonic_output, unsynched_sdds,
                       nturns, str(0.04), lattice, gsad)
 
-
-if args.plotsdds1 == True:
+if args.plotsdds1:
     sdds_turns(python_exe, unsynched_sdds)
-else: pass
 
-if args.plotfreq1 == True:
+if args.plotfreq1:
     freq_spec(python_exe, unsynched_sdds, model_path)
-else: pass
-
 
 # Optics analysis 1, before synchronization
-if args.optics1 == True:
+if args.optics1:
     optics_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                    unsynched_harmonic_output, unsynched_optics_output, unsynched_sdds, 
                    ringID, args.all_files)
     try: chromatic_analysis(model_path, unsynched_optics_output)         
     except: pass
-else: pass
-
 
 # Asynch analysis
-if args.asynch == True:
+if args.asynch:
     asynch_analysis(python_exe, unsynched_optics_output, main_output, model_path, ringID)
-else: pass
-
 
 # Plotting BPM synchronisation pre-fix
-if args.plotasynch1 == True:
+if args.plotasynch1:
     asynch_cmap(python_exe, unsynched_sdds, unsynched_optics_output, when='before')
-else: pass
 
-
-# Second sdds conversion (with knowledge of BPM synch) and harmonic analysis 2
+# Second sdds conversion (with knowledge of BPM synch)
 if args.convert2 or args.harmonic2:
     sdds_conv(input_data, file_dict, main_output, synched_sdds,
               lattice, gsad, ringID, kickax, asynch_info=True)
 
     cut_large_sdds(python_exe, synched_sdds)
+
+# Second harmonic analysis with synced BPMs
 if args.harmonic2:
     harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                       synched_harmonic_output, synched_sdds,
                       nturns, str(0.04), lattice, gsad)
-else: pass
 
-
-if args.plotsdds2 == True:
+if args.plotsdds2:
     sdds_turns(python_exe, synched_sdds)
-else: pass
 
-if args.plotfreq2 == True:
+if args.plotfreq2:
     freq_spec(python_exe, synched_sdds, model_path)
-else: pass
 
 # Phase analysis 2
-if args.optics2 == True:
+if args.optics2:
     optics_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                    synched_harmonic_output, synched_optics_output, synched_sdds, 
                    ringID, args.all_files)
@@ -212,48 +196,36 @@ if args.optics2 == True:
     except: pass
     try: coupling_analysis(model_path, synched_sdds, synched_harmonic_output, synched_optics_output, args.all_files)
     except: pass
-else: pass
 
-if args.plotoptics2 == True:
+if args.plotoptics2:
     plot_optics(python_exe, synched_optics_output, model_path, ringID)
-else: pass
-
 
 # Plotting BPM synchronisation post-fix
-if args.plotasynch2 == True:
+if args.plotasynch2:
     asynch_cmap(python_exe, synched_sdds, synched_optics_output, when='after')
-else: pass
-
 
 # Plotting BPM calibration pre-calib
-if args.plotcalib1 == True:
+if args.plotcalib1:
     calib_hist(python_exe, synched_sdds, synched_optics_output, when='before')
-else: pass
-
 
 # Calculation of BPM calibration and writing lin files and calib harmonic folder
-if args.calib == True:
+if args.calib:
     bpm_calibration(python_exe, synched_sdds, ringID)
-else: pass
-
 
 # Phase analysis 3, with calibrated BPMs
-if args.optics3 == True:
+if args.optics3:
     optics_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                    calibrated_harmonic_output, calibrated_optics_output, synched_sdds, 
                    ringID, args.all_files)
     try: chromatic_analysis(model_path, calibrated_optics_output)
     except: pass
-else: pass
 
-if args.plotoptics3 == True:
+if args.plotoptics3:
     plot_optics(python_exe, calibrated_optics_output, model_path, ringID)
-else: pass
 
 # Plotting BPM calibration post-calib
-if args.plotcalib2 == True:
+if args.plotcalib2:
     calib_hist(python_exe, synched_sdds, calibrated_optics_output, when='after')
-else: pass
 
 
 print(" ********************************************\n",
