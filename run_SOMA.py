@@ -22,6 +22,9 @@ required.add_argument('--parameters',
 parser.add_argument('--all_files', '-all',
                     action='store_true',
                     help='To be used when all files should run at once, e.g. for dispersion measurement with off-momentum files.')
+parser.add_argument('--convert1', '-c1',
+                    action='store_true',
+                    help='sdds conversion with NO knowledge of BPM synch.')
 parser.add_argument('--harmonic1', '-h1',
                     action='store_true',
                     help='Harmonic analysis without knowledge of BPM synch. This is enough to obtain tunes.')
@@ -40,6 +43,9 @@ parser.add_argument('--plotasynch1', '-pa1',
 parser.add_argument('--asynch', '-aa',
                     action='store_true',
                     help='Analysis of BPM synchronisation from optics1 output.')
+parser.add_argument('--convert2', '-c2',
+                    action='store_true',
+                    help='sdds conversion with knowledge of BPM synch.')
 parser.add_argument('--harmonic2', '-h2',
                     action='store_true',
                     help='sdds conversion and harmonic analysis with knowledge of BPM synch.')
@@ -125,12 +131,12 @@ else:
 
 
 # First conversion and harmonic analysis 1
-if args.harmonic1 == True:
+if args.convert1 or args.harmonic1:
     sdds_conv(input_data, file_dict, main_output, unsynched_sdds,
               lattice, gsad, ringID, kickax, asynch_info=False)
 
     cut_large_sdds(python_exe, unsynched_sdds)
-
+if args.harmonic1 == True:
     harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                       unsynched_harmonic_output, unsynched_sdds,
                       nturns, str(0.04), lattice, gsad)
@@ -169,16 +175,17 @@ else: pass
 
 
 # Second sdds conversion (with knowledge of BPM synch) and harmonic analysis 2
-if args.harmonic2 == True:
+if args.convert2 or args.harmonic2:
     sdds_conv(input_data, file_dict, main_output, synched_sdds,
               lattice, gsad, ringID, kickax, asynch_info=True)
 
     cut_large_sdds(python_exe, synched_sdds)
-
+if args.harmonic2:
     harmonic_analysis(py_version, python_exe, BetaBeatsrc_path, model_path,
                       synched_harmonic_output, synched_sdds,
                       nturns, str(0.04), lattice, gsad)
 else: pass
+
 
 if args.plotsdds2 == True:
     sdds_turns(python_exe, synched_sdds)
