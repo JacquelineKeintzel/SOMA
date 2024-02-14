@@ -18,45 +18,51 @@ This code is used to analyse SuperKEKB Turn-by-Turn Optics measurements as follo
 2) Run *run\_SOMA.py* from the command line. The following options are available:
 
 Mandatory arguments are:
-- **"- -parameters":**
+- `--parameters:`
 Path to *parameters.txt* file, which contains all other paths necessary for the package.
 
 Optional arguments are:
-- **"- -harmonic1"/"-h1":**
+- `--model:`
+Creates a model given the lattice in parameters.
+- `--convert1/-c1:`
+Converts raw TBT data without BPM synch to SDDS format.
+- `--harmonic1/-h1:`
 Harmonic analysis without knowledge of BPM synch. This is enough to obtain tunes.
-- **"- -plotsdds1"/"-ps1":**
+- `--plotsdds1/-ps1:`
 Plotting of raw sdds files, before synchronization.
-- **"- -plotfreq1"/"-pf1":**
+- `--plotfreq1/-pf1:`
 Plotting of frequency spectrum before synchronization.
-- **"- -optics1"/"-o1":**
+- `--optics1/-o1:`
 Phase analysis of harmonic1 output without BPM synch knowledge.
-- **"- -plotasynch1"/"-pa1":**
+- `--plotasynch1/-pa1:`
 Plotting of BPM synchronisation from phase1 output, before synch fix is applied.
-- **"- -asynch"/"-aa":**
+- `--asynch/-aa:`
 Analysis of BPM synchronisation from phase1 output.
-- **"- -harmonic2"/"-h2":**
+- `--convert1/-c1:`
+Converts raw TBT data with BPM synch to SDDS format.
+- `--harmonic2/-h2:`
 sdds conversion and harmonic analysis with knowledge of BPM synch.
-- **"- -plotsdds1"/"-ps2":**
+- `--plotsdds1/-ps2:`
 Plotting of synchronized sdds files.
-- **"- -optics2"/"-o2":**
+- `--optics2/-o2:`
 Phase analysis of harmonic2 output with knowledge of BPM synch.
-- **"- -plotoptics22"/"-po2":**
+- `--plotoptics22/-po2:`
 Plots the optics after BPM synchronisation.
-- **"- -plotasynch2"/"-pa2":**
+- `--plotasynch2/-pa2:`
 Plotting of BPM synchronisation from phase2 output, after synch fix is applied.
-- **"- -plotcalib1"/"-pc1":**
+- `--plotcalib1/-pc1:`
 Plotting of BPM calibration from phase2 output, before calibration is applied.
-- **"- -calib"/"-c":**
+- `--calib/-c:`
 Estimates the BPM calibration (beta from phase vs amplitude) for this measurement.
-- **"- -optics3"/"-o3":**
+- `--optics3/-o3:`
 Phase analysis of harmonic3 output with knowledge of BPM calibration.
-- **"- -plotoptics22"/"-po3":**
+- `--plotoptics22/-po3:`
 Plots the optics after BPM calibration.
-- **"- -plotcalib2"/"-pc2":**
+- `--plotcalib2/-pc2:`
 Plotting of BPM calibration from phase3 output, after calibration is applied.
-- **"- -all_at_once"/"-all":**
+- `--all_at_once/-all:`
 To be used when all files should run at once, e.g. for dispersion measurement with off-momentum files.
-- **"- --omc3"/"-omc3":**
+- `--omc3/-omc3:`
 Use OMC3/python3 instead of BetaBeat.src/python2.
 
 
