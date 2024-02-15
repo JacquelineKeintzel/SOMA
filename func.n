@@ -52,11 +52,11 @@ SaveTwiss[fn1_:moni, fn2_:total]:=
   Module[{fw1, fw2, nx0=0, ny0=0},
     $FORM = "18.7";
     
-    System["rm "//fn1];
+    System["rm -f "//fn1];
     TwissTitleMoni[fn1];
     WriteTwissMoni[fn1, nx0, ny0];
     
-    System["rm "//fn2];
+    System["rm -f "//fn2];
     TwissTitleAll[fn2];
     WriteTwissAll[fn2, nx0, ny0];   
   ]
