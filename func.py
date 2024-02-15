@@ -860,7 +860,7 @@ def coupling_analysis(model_path, sdds_output, harmonic_output, optics_output, a
 
 
 
-def plot_optics(python_exe, optics_output, model, ringID):
+def plot_optics(python_exe, optics_output, model, ringID, all_files_flag):
     """
     Function to call script to plot all optics from OMC3 output.
     WARNING: only tested with python 3!
@@ -872,6 +872,7 @@ def plot_optics(python_exe, optics_output, model, ringID):
                         ' --model ' + model + 
                         ' --axis ' + axis +
                         ' --ring ' + ringID +
+                        ' --allfiles ' + str(all_files_flag) +
                         ' --pngpdf ' + pngpdf )
 
 

@@ -1,4 +1,3 @@
-
 from optparse import OptionParser
 import numpy as np 
 import matplotlib.pyplot as plt
@@ -172,87 +171,92 @@ def main():
     parser.add_option("-r", "--ring",  dest="ring", help="Ring ID, HER or LER")
     parser.add_option("-a", "--axis",  dest="axis", help="Plane, x or y")
     parser.add_option("-p", "--pngpdf",  dest="pngpdf", help="Output format, PNG oder PDF")
+    parser.add_option("-f", "--allfiles", dest = "all_files_flag", help="Plot only the average optics")
     (options, args) = parser.parse_args()
-
     
-    if not os.path.exists(os.path.join(options.dir, 'average')): 
-        print(" ********************************************\n",
-                "Plot optics:\n",
-                'I could not find an average output folder..\n',
-                'I stop now. \n',    
-                "********************************************")
-        sys.exit()
-
     num = 1
 
-    files = [ff for ff in os.listdir(os.path.join(options.dir, 'average')) if ('.tfs') in ff]
-    print(files)
+    all_folders = os.listdir(options.dir)
 
-    Smdl, betxmdl, betymdl, dxmdl, dymdl, xmdl, ymdl = read_model(os.path.join(options.model, 'twiss.dat'))
-   
+    if options.all_files_flag == "True":
+        all_folders = ['average']
 
-    if 'COD_betxy_muxy.tfs' in files:
-        S, deltabetx, deltabety = read_beta_cod(os.path.join(options.dir, 'average/COD_betxy_muxy.tfs'))
-        if options.axis == 'x':
-            num = plot_delta(os.path.join(options.dir, 'average'), 'COD_beta', options.axis, S, deltabetx, [0]*len(deltabetx), options.pngpdf, num)
-        else: 
-            num = plot_delta(os.path.join(options.dir, 'average'), 'COD_beta', options.axis, S, deltabety, [0]*len(deltabety), options.pngpdf, num)
+        if not os.path.exists(os.path.join(options.dir, 'average')): 
+            print(" ********************************************\n",
+                    "Plot optics:\n",
+                    'I could not find an average output folder..\n',
+                    'I stop now. \n',    
+                    "********************************************")
+            sys.exit()
 
-    if 'COD_dxy.tfs' in files:
-        S, dx, dy = read_disp_cod(os.path.join(options.dir, 'average/COD_dxy.tfs'))
-        if options.axis == 'x':
-            num = plot_abs(os.path.join(options.dir, 'average'), 'COD_disp', options.axis, S, Smdl, dx, [0]*len(dx), dxmdl, options.pngpdf, num)
-        else: 
-            num = plot_abs(os.path.join(options.dir, 'average'), 'COD_disp', options.axis, S, Smdl, dy, [0]*len(dx), dymdl, options.pngpdf, num)
+    for folder in all_folders:
+        print(folder)
+        files = [ff for ff in os.listdir(os.path.join(options.dir, folder)) if ('.tfs') in ff]
+        Smdl, betxmdl, betymdl, dxmdl, dymdl, xmdl, ymdl = read_model(os.path.join(options.model, 'twiss.dat'))
     
-    if 'phase_'+options.axis+'.tfs' in files:
-        S, deltaph, errdeltaph = read_phase(os.path.join(options.dir, 'average/phase_'+options.axis+'.tfs'))
-        num = plot_delta(os.path.join(options.dir, 'average'), 'phase', options.axis, S, deltaph, errdeltaph, options.pngpdf, num)
 
-    if 'beta_amplitude_'+options.axis+'.tfs' in files:
-        S, deltabet, errdeltabet = read_beta_amp(os.path.join(options.dir, 'average/beta_amplitude_'+options.axis+'.tfs'))
-        num = plot_delta(os.path.join(options.dir, 'average'), 'beta_amp', options.axis, S, deltabet, errdeltabet, options.pngpdf, num)
-    
-    if 'beta_phase_'+options.axis+'.tfs' in files:
-        S, deltabet, errdeltabet = read_beta_ph(os.path.join(options.dir, 'average/beta_phase_'+options.axis+'.tfs'))
-        num = plot_delta(os.path.join(options.dir, 'average'), 'beta_ph', options.axis, S, deltabet, errdeltabet, options.pngpdf, num)
-    
-    if 'normalised_dispersion_'+options.axis+'.tfs' in files:
-        S, ndx, errndx, dx, errdx = read_norm_disp(os.path.join(options.dir, 'average/normalised_dispersion_'+options.axis+'.tfs'))
-        ndmdl = dxmdl/np.sqrt(betxmdl) if options.axis == 'x' else dymdl/np.sqrt(betymdl)
-        num = plot_abs(os.path.join(options.dir, 'average'), 'norm_disp', options.axis, S, Smdl, ndx, errndx, ndmdl, options.pngpdf, num)
+        if 'COD_betxy_muxy.tfs' in files:
+            S, deltabetx, deltabety = read_beta_cod(os.path.join(options.dir, 'average/COD_betxy_muxy.tfs'))
+            if options.axis == 'x':
+                num = plot_delta(os.path.join(options.dir, folder), 'COD_beta', options.axis, S, deltabetx, [0]*len(deltabetx), options.pngpdf, num)
+            else: 
+                num = plot_delta(os.path.join(options.dir, folder), 'COD_beta', options.axis, S, deltabety, [0]*len(deltabety), options.pngpdf, num)
 
-    if 'dispersion_'+options.axis+'.tfs' in files:
-        dmdl = dxmdl if options.axis == 'x' else dymdl
-        S, dx, errdx, deltadx, errdeltadx, d2x, errd2x = read_disp(os.path.join(options.dir, 'average/dispersion_'+options.axis+'.tfs'))
-        num = plot_delta(os.path.join(options.dir, 'average'), 'disp', options.axis, S, deltadx, errdeltadx, options.pngpdf, num)
-        num = plot_abs(os.path.join(options.dir, 'average'), 'disp', options.axis, S, Smdl, dx, errdx, dmdl, options.pngpdf, num)
+        if 'COD_dxy.tfs' in files:
+            S, dx, dy = read_disp_cod(os.path.join(options.dir, 'average/COD_dxy.tfs'))
+            if options.axis == 'x':
+                num = plot_abs(os.path.join(options.dir, folder), 'COD_disp', options.axis, S, Smdl, dx, [0]*len(dx), dxmdl, options.pngpdf, num)
+            else: 
+                num = plot_abs(os.path.join(options.dir, folder), 'COD_disp', options.axis, S, Smdl, dy, [0]*len(dx), dymdl, options.pngpdf, num)
+        
+        if 'phase_'+options.axis+'.tfs' in files:
+            S, deltaph, errdeltaph = read_phase(os.path.join(options.dir, 'average/phase_'+options.axis+'.tfs'))
+            num = plot_delta(os.path.join(options.dir, folder), 'phase', options.axis, S, deltaph, errdeltaph, options.pngpdf, num)
 
-        if len(d2x) > 1:
-            tw_files = [ff for ff in os.listdir(options.model) if 'twiss_dp0' in ff ]
-            dpp = np.arange(-1e-3, 1.1e-3, 1e-4)
-            orbit=[]
-            for ff in tw_files:
-                valmdl = read_model(os.path.join(options.model, ff))
-                orbit.append(valmdl[5]) if options.axis == 'x' else orbit.append(valmdl[6])
-            orbit=np.transpose(orbit)
-            
-            d2mdl = []
-            dmdl = []
-            for i in range(len(orbit)):
+        if 'beta_amplitude_'+options.axis+'.tfs' in files:
+            S, deltabet, errdeltabet = read_beta_amp(os.path.join(options.dir, 'average/beta_amplitude_'+options.axis+'.tfs'))
+            num = plot_delta(os.path.join(options.dir, folder), 'beta_amp', options.axis, S, deltabet, errdeltabet, options.pngpdf, num)
+        
+        if 'beta_phase_'+options.axis+'.tfs' in files:
+            S, deltabet, errdeltabet = read_beta_ph(os.path.join(options.dir, 'average/beta_phase_'+options.axis+'.tfs'))
+            num = plot_delta(os.path.join(options.dir, folder), 'beta_ph', options.axis, S, deltabet, errdeltabet, options.pngpdf, num)
+        
+        if 'normalised_dispersion_'+options.axis+'.tfs' in files:
+            S, ndx, errndx, dx, errdx = read_norm_disp(os.path.join(options.dir, 'average/normalised_dispersion_'+options.axis+'.tfs'))
+            ndmdl = dxmdl/np.sqrt(betxmdl) if options.axis == 'x' else dymdl/np.sqrt(betymdl)
+            num = plot_abs(os.path.join(options.dir, folder), 'norm_disp', options.axis, S, Smdl, ndx, errndx, ndmdl, options.pngpdf, num)
+
+        if 'dispersion_'+options.axis+'.tfs' in files:
+            dmdl = dxmdl if options.axis == 'x' else dymdl
+            S, dx, errdx, deltadx, errdeltadx, d2x, errd2x = read_disp(os.path.join(options.dir, 'average/dispersion_'+options.axis+'.tfs'))
+            num = plot_delta(os.path.join(options.dir, folder), 'disp', options.axis, S, deltadx, errdeltadx, options.pngpdf, num)
+            num = plot_abs(os.path.join(options.dir, folder), 'disp', options.axis, S, Smdl, dx, errdx, dmdl, options.pngpdf, num)
+
+            if len(d2x) > 1:
+                tw_files = [ff for ff in os.listdir(options.model) if 'twiss_dp0' in ff ]
+                dpp = np.arange(-1e-3, 1.1e-3, 1e-4)
+                orbit=[]
+                for ff in tw_files:
+                    valmdl = read_model(os.path.join(options.model, ff))
+                    orbit.append(valmdl[5]) if options.axis == 'x' else orbit.append(valmdl[6])
+                orbit=np.transpose(orbit)
                 
-                diff1 = np.zeros(dpp.shape,np.float)
-                diff2 = np.zeros(dpp.shape,np.float)
-                
-                diff1[0:-1] = np.diff(orbit[i])/np.diff(dpp)
-                diff1[-1] = (orbit[i][-1] - orbit[i][-2])/(dpp[-1] - dpp[-2])
-                diff2[0:-1] = np.diff(diff1)/np.diff(dpp)
-                diff2[-1] = (diff1[-1] - diff1[-2])/(dpp[-1] - dpp[-2])
+                d2mdl = []
+                dmdl = []
+                for i in range(len(orbit)):
+                    
+                    diff1 = np.zeros(dpp.shape,np.float)
+                    diff2 = np.zeros(dpp.shape,np.float)
+                    
+                    diff1[0:-1] = np.diff(orbit[i])/np.diff(dpp)
+                    diff1[-1] = (orbit[i][-1] - orbit[i][-2])/(dpp[-1] - dpp[-2])
+                    diff2[0:-1] = np.diff(diff1)/np.diff(dpp)
+                    diff2[-1] = (diff1[-1] - diff1[-2])/(dpp[-1] - dpp[-2])
 
-                dmdl.append(diff1[10])
-                d2mdl.append(diff2[10])
+                    dmdl.append(diff1[10])
+                    d2mdl.append(diff2[10])
 
-            num = plot_abs(os.path.join(options.dir, 'average'), 'disp2', options.axis, S, Smdl, d2x, errd2x, d2mdl, options.pngpdf, num)
+                num = plot_abs(os.path.join(options.dir, folder), 'disp2', options.axis, S, Smdl, d2x, errd2x, d2mdl, options.pngpdf, num)
             
 
 if __name__ == "__main__":

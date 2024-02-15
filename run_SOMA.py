@@ -198,7 +198,7 @@ if args.optics2:
     except: pass
 
 if args.plotoptics2:
-    plot_optics(python_exe, synched_optics_output, model_path, ringID)
+    plot_optics(python_exe, synched_optics_output, model_path, ringID, args.all_files)
 
 # Plotting BPM synchronisation post-fix
 if args.plotasynch2:
@@ -221,7 +221,7 @@ if args.optics3:
     except: pass
 
 if args.plotoptics3:
-    plot_optics(python_exe, calibrated_optics_output, model_path, ringID)
+    plot_optics(python_exe, calibrated_optics_output, model_path, ringID, args.all_files)
 
 # Plotting BPM calibration post-calib
 if args.plotcalib2:
