@@ -136,18 +136,18 @@ This code allows to extract measurements obtained from Closed Orbit Distortion (
 
 Run *run\_convertCODtoTwiss.py* from the command line. The following options are available:
 
-- **"- -beta":**
+- `--beta/-b`:
 SAD timestamp of COD measurements for beta;
 e.g. /nfs/sadnas1a/ldata/SuperKEKB/KCG/HER/MeasOpt/2019/11/BETA_RAW_2019_11_21_17:58:18
-- **"- -disp":**
+- `--disp/-d`:
 SAD timestamp of COD measurements for dispersion; 
 e.g. /nfs/sadnas1a/ldata/SuperKEKB/KCG/HER/MeasOpt/2019/11/DISP_2019_11_12_12:40:54
-- **"- -coup":**
+- `--coup/-c`:
 SAD timestamp of COD measurements for coupling; 
 e.g. /nfs/sadnas1a/ldata/SuperKEKB/KCG/HER/MeasOpt/2019/11/XYC_2019_11_29_15:41:16
-- **"- -ring":**
+- `--ring/-r` :
 RingID, either HER or LER
-- **"- -output":**
+- `--output/-o`:
 Define output directory
-- **"- -model":**
+- `--model/-m`:
 Path to twiss file "twiss_elements.dat" containing all BPMs.
